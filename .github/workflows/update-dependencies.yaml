@@ -1,0 +1,53 @@
+name: Daily Dependency Update
+
+on:
+  schedule:
+    # Run at 00:00 every day
+    - cron: '0 0 * * *'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  update-dependencies:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' 
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Update dependencies
+        run: pnpm up
+
+      - name: Install Playwright Browsers
+        run: pnpm exec playwright install chromium --with-deps
+
+      - name: Run E2E Tests
+        timeout-minutes: 10
+        run: pnpm run test
+
+      - name: Create Pull Request
+        if: success() # Only create PR if tests pass
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore(deps): update all dependencies to latest"
+          title: "Automated Dependency Updates"
+          body: |
+            Automated dependency updates triggered by daily GitHub Action schedule.
+          branch: "chore/auto-update-dependencies"
+          delete-branch: true
+          base: "main"
