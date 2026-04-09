@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ObjectDetectorResult } from '@mediapipe/tasks-vision';
+import { ObjectDetectorResult, DrawingUtils } from '@mediapipe/tasks-vision';
 import { BaseVisionTask } from '../components/base-vision-task';
 
 // @ts-ignore
@@ -122,14 +122,16 @@ class ObjectDetectionTask extends BaseVisionTask {
   }
 
   private drawDetection(ctx: CanvasRenderingContext2D, detection: any, mirror: boolean) {
-    ctx.beginPath();
-    ctx.lineWidth = 4;
-    ctx.strokeStyle = '#007f8b';
+    const drawingUtils = new DrawingUtils(ctx);
+    drawingUtils.drawBoundingBox(detection.boundingBox!, {
+      color: '#007f8b',
+      lineWidth: 4,
+      fillColor: 'transparent'
+    });
 
-    const { originX, originY, width, height } = detection.boundingBox!;
+    const { originX, originY } = detection.boundingBox!;
     let x = originX;
 
-    ctx.strokeRect(x, originY, width, height);
     ctx.fillStyle = '#007f8b';
     ctx.font = '16px sans-serif';
 
