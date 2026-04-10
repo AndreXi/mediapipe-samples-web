@@ -44,7 +44,7 @@ class InteractiveSegmenterTask extends BaseVisionTask {
     this.webcamOverlay.style.position = 'absolute';
     this.webcamOverlay.style.top = '0';
     this.webcamOverlay.style.left = '0';
-    this.webcamOverlay.style.pointerEvents = 'none'; 
+    this.webcamOverlay.style.pointerEvents = 'none';
 
     if (this.freezeButton) {
       this.freezeButton.addEventListener('click', this.toggleFreeze.bind(this));
@@ -52,7 +52,7 @@ class InteractiveSegmenterTask extends BaseVisionTask {
     }
 
     const testImage = document.getElementById('test-image') as HTMLImageElement;
-    
+
     const handleInteraction = async (e: MouseEvent, source: 'image' | 'webcam') => {
       if (!this.isWorkerReady) return;
 
@@ -72,7 +72,7 @@ class InteractiveSegmenterTask extends BaseVisionTask {
       const rect = clickElement.getBoundingClientRect();
       let clickX = e.clientX - rect.left;
       let clickY = e.clientY - rect.top;
-      
+
       let x = clickX / rect.width;
       const y = clickY / rect.height;
 
@@ -84,15 +84,15 @@ class InteractiveSegmenterTask extends BaseVisionTask {
 
       this.updateStatus('Segmenting...');
       try {
-          const bitmap = await createImageBitmap(originalBitmapSource);
-          this.worker?.postMessage({
-            type: 'SEGMENT',
-            bitmap,
-            pt: { x, y }
-          }, [bitmap]);
-        } catch (err) {
-          console.error(err);
-        }
+        const bitmap = await createImageBitmap(originalBitmapSource);
+        this.worker?.postMessage({
+          type: 'SEGMENT',
+          bitmap,
+          pt: { x, y }
+        }, [bitmap]);
+      } catch (err) {
+        console.error(err);
+      }
     };
 
     testImage.addEventListener('click', (e) => handleInteraction(e, 'image'));
@@ -190,13 +190,13 @@ class InteractiveSegmenterTask extends BaseVisionTask {
   protected override handleWorkerMessage(event: MessageEvent) {
     const { type } = event.data;
     if (type === 'SEGMENT_RESULT') {
-      const { maskData, width, height, inferenceTime } = event.data;
+      const { maskBitmap, width, height, inferenceTime } = event.data;
       this.updateInferenceTime(inferenceTime);
 
       if (this.runningMode === 'VIDEO') {
-        this.drawMask(maskData, width, height, this.overlayCtx);
+        this.drawMask(maskBitmap, width, height, this.overlayCtx);
       } else {
-        this.drawMask(maskData, width, height, this.canvasCtx);
+        this.drawMask(maskBitmap, width, height, this.canvasCtx);
       }
 
       this.updateStatus(`Done in ${Math.round(inferenceTime)}ms`);
@@ -205,39 +205,23 @@ class InteractiveSegmenterTask extends BaseVisionTask {
     }
   }
 
-  private drawMask(maskData: Uint8Array | null, width: number, height: number, ctx: CanvasRenderingContext2D) {
-    if (!maskData) return;
-    
-    // Dynamically synchronize the canvas backing buffer with the model output dimensions
-    // This prevents putImageData from truncating the mask and skewing it!
+  private drawMask(maskBitmap: ImageBitmap | null, width: number, height: number, ctx: CanvasRenderingContext2D) {
+    if (!maskBitmap) return;
+
     ctx.canvas.width = width;
     ctx.canvas.height = height;
     ctx.clearRect(0, 0, width, height);
+    ctx.drawImage(maskBitmap, 0, 0);
 
-    const imageData = ctx.createImageData(width, height);
-    const data = imageData.data;
-
-    for (let i = 0; i < maskData.length; i++) {
-      const category = maskData[i];
-      // The MediaPipe Magic Touch model returns 0 for the TARGET OBJECT (foreground)
-      // and > 0 (typically 255 or 1) for the background.
-      if (category === 0) {
-        const offset = i * 4;
-        data[offset] = 0;     // R
-        data[offset + 1] = 0; // G
-        data[offset + 2] = 255; // B
-        data[offset + 3] = 128; // Alpha
-      }
-    }
-    ctx.putImageData(imageData, 0, 0);
+    maskBitmap.close();
   }
 
   protected override getWorkerInitParams(): Record<string, any> {
     return {};
   }
 
-  protected override displayImageResult() {}
-  protected override displayVideoResult() {}
+  protected override displayImageResult() { }
+  protected override displayVideoResult() { }
 }
 
 let activeTask: InteractiveSegmenterTask | null = null;

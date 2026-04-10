@@ -17,7 +17,9 @@
 import {
   ImageSegmenter,
   FilesetResolver,
-  ImageSegmenterResult
+  ImageSegmenterResult,
+  DrawingUtils,
+  RGBAColor
 } from '@mediapipe/tasks-vision';
 
 import { BaseWorker } from './base-worker';
@@ -30,11 +32,16 @@ class ImageSegmentationWorker extends BaseWorker<ImageSegmenter> {
     vision.wasmLoaderPath = `${this.getWasmPath()}/vision_wasm_module_internal.js`;
     const modelBuffer = await this.loadModelAsset();
 
+    if (!this.renderCanvas) {
+      this.renderCanvas = new OffscreenCanvas(1, 1);
+    }
+
     this.taskInstance = await ImageSegmenter.createFromOptions(vision, {
       baseOptions: {
         modelAssetBuffer: new Uint8Array(modelBuffer),
         delegate: this.currentOptions.delegate === 'GPU' ? 'GPU' : 'CPU',
       },
+      canvas: this.renderCanvas,
       runningMode: this.currentOptions.runningMode,
       outputCategoryMask: true,
       outputConfidenceMasks: true
@@ -91,22 +98,14 @@ class ImageSegmentationWorker extends BaseWorker<ImageSegmenter> {
               this.renderCanvas = new OffscreenCanvas(width, height);
             }
 
-            const ctx = this.renderCanvas.getContext('2d') as OffscreenCanvasRenderingContext2D;
-            if (ctx) {
-              const maskData = result.categoryMask.getAsUint8Array();
-              const imageData = ctx.createImageData(width, height);
-              const data = imageData.data;
+            this.renderCanvas.width = width;
+            this.renderCanvas.height = height;
 
-              for (let i = 0; i < maskData.length; i++) {
-                const categoryIndex = maskData[i];
-                const color = colors[categoryIndex] || [0, 0, 0, 0];
-                const offset = i * 4;
-                data[offset] = color[0];
-                data[offset + 1] = color[1];
-                data[offset + 2] = color[2];
-                data[offset + 3] = color[3];
-              }
-              ctx.putImageData(imageData, 0, 0);
+            const glCtx = this.renderCanvas.getContext('webgl2') as WebGL2RenderingContext;
+            if (glCtx) {
+              const drawingUtils = new DrawingUtils(glCtx);
+              const transparent: RGBAColor = [0, 0, 0, 0];
+              drawingUtils.drawCategoryMask(result.categoryMask, colors, transparent);
               maskBitmap = this.renderCanvas.transferToImageBitmap();
             }
             result.categoryMask.close();
@@ -135,7 +134,8 @@ class ImageSegmentationWorker extends BaseWorker<ImageSegmenter> {
         if (requiredMode === 'VIDEO') {
           this.taskInstance.segmentForVideo(bitmap, timestampMs, callback);
         } else {
-          this.taskInstance.segment(bitmap, callback);
+          const result = this.taskInstance.segment(bitmap);
+          callback(result);
         }
       } catch (e: any) {
         console.error("Worker segmentation error:", e);

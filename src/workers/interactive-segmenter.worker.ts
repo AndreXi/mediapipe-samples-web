@@ -15,20 +15,27 @@
  */
 
 /// <reference types="vite/client" />
-import { InteractiveSegmenter, FilesetResolver } from '@mediapipe/tasks-vision';
+import { InteractiveSegmenter, FilesetResolver, DrawingUtils, RGBAColor } from '@mediapipe/tasks-vision';
 import { BaseWorker } from './base-worker';
 
 class InteractiveSegmenterWorker extends BaseWorker<InteractiveSegmenter> {
-  protected async initializeTask(/* data: any */): Promise<void> {
+  private renderCanvas?: OffscreenCanvas;
+
+  protected async initializeTask(): Promise<void> {
     const wasmPath = new URL(`${import.meta.env.BASE_URL}wasm`, self.location.origin).href;
     const vision = await FilesetResolver.forVisionTasks(wasmPath, /* useEsmModule= */ true);
     vision.wasmLoaderPath = `${wasmPath}/vision_wasm_module_internal.js`;
+
+    if (!this.renderCanvas) {
+      this.renderCanvas = new OffscreenCanvas(1, 1);
+    }
 
     this.taskInstance = await InteractiveSegmenter.createFromOptions(vision, {
       baseOptions: {
         modelAssetPath: this.currentOptions.modelAssetPath,
         delegate: this.currentOptions.delegate || 'GPU',
       },
+      canvas: this.renderCanvas,
       outputCategoryMask: true,
       outputConfidenceMasks: false
     });
@@ -57,23 +64,43 @@ class InteractiveSegmenterWorker extends BaseWorker<InteractiveSegmenter> {
         });
 
         const categoryMask = result.categoryMask;
-        let maskData: Uint8Array | Float32Array | null = null;
+        let maskBitmap: ImageBitmap | null = null;
         let width = 0;
         let height = 0;
 
         if (categoryMask) {
           width = categoryMask.width;
           height = categoryMask.height;
-          maskData = categoryMask.getAsUint8Array();
+
+          if (this.renderCanvas) {
+            this.renderCanvas.width = width;
+            this.renderCanvas.height = height;
+
+            const glCtx = this.renderCanvas.getContext('webgl2') as WebGL2RenderingContext;
+            if (glCtx) {
+              const drawingUtils = new DrawingUtils(glCtx);
+              const transparent: RGBAColor = [0, 0, 0, /* alpha= */ 0];
+
+              // Target (category === 0) gets semi-transparent blue, everything else gets transparent
+              const colors: RGBAColor[] = [];
+              for (let i = 0; i < 256; i++) {
+                colors.push(i === 0 ? [0, 0, 255, /* alpha= */ 128] : transparent);
+              }
+
+              drawingUtils.drawCategoryMask(categoryMask, colors, transparent);
+              maskBitmap = this.renderCanvas.transferToImageBitmap();
+            }
+          }
+          categoryMask.close();
         }
 
-        self.postMessage({
+        (self as any).postMessage({
           type: 'SEGMENT_RESULT',
-          maskData,
+          maskBitmap,
           width,
           height,
           inferenceTime: performance.now() - timestampMs
-        });
+        }, maskBitmap ? [maskBitmap] : []);
 
       } catch (error: any) {
         console.error("Segmentation Error:", error);
