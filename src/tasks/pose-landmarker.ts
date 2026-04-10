@@ -62,9 +62,12 @@ class PoseLandmarkerTask extends BaseVisionTask {
 
     // Custom model options for Pose Landmarker
     this.models = {
-      'pose_landmarker_lite': 'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task',
-      'pose_landmarker_full': 'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_full/float16/1/pose_landmarker_full.task',
-      'pose_landmarker_heavy': 'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_heavy/float16/1/pose_landmarker_heavy.task'
+      pose_landmarker_lite:
+        'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task',
+      pose_landmarker_full:
+        'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_full/float16/1/pose_landmarker_full.task',
+      pose_landmarker_heavy:
+        'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_heavy/float16/1/pose_landmarker_heavy.task',
     };
 
     // Override the model selector config for pose specifically
@@ -72,7 +75,7 @@ class PoseLandmarkerTask extends BaseVisionTask {
       this.modelSelector.updateOptions([
         { label: 'Pose Landmarker (Lite)', value: 'pose_landmarker_lite', isDefault: true },
         { label: 'Pose Landmarker (Full)', value: 'pose_landmarker_full' },
-        { label: 'Pose Landmarker (Heavy)', value: 'pose_landmarker_heavy' }
+        { label: 'Pose Landmarker (Heavy)', value: 'pose_landmarker_heavy' },
       ]);
     }
   }
@@ -92,7 +95,7 @@ class PoseLandmarkerTask extends BaseVisionTask {
       minPosePresenceConfidence: this.minPosePresenceConfidence,
       minTrackingConfidence: this.minTrackingConfidence,
       numPoses: this.numPoses,
-      outputSegmentationMasks: this.outputSegmentationMasks
+      outputSegmentationMasks: this.outputSegmentationMasks,
     };
   }
 
@@ -115,7 +118,7 @@ class PoseLandmarkerTask extends BaseVisionTask {
 
       for (const landmark of result.landmarks) {
         this.drawingUtils.drawLandmarks(landmark, {
-          radius: (data) => DrawingUtils.lerp(data.from!.z, -0.15, 0.1, 5, 1)
+          radius: (data) => DrawingUtils.lerp(data.from!.z, -0.15, 0.1, 5, 1),
         });
         this.drawingUtils.drawConnectors(landmark, PoseLandmarker.POSE_CONNECTIONS);
       }
@@ -138,7 +141,7 @@ class PoseLandmarkerTask extends BaseVisionTask {
 
       for (const landmark of result.landmarks) {
         this.drawingUtils.drawLandmarks(landmark, {
-          radius: (data) => DrawingUtils.lerp(data.from!.z, -0.15, 0.1, 5, 1)
+          radius: (data) => DrawingUtils.lerp(data.from!.z, -0.15, 0.1, 5, 1),
         });
         this.drawingUtils.drawConnectors(landmark, PoseLandmarker.POSE_CONNECTIONS);
       }
@@ -155,8 +158,10 @@ export async function setupPoseLandmarker(container: HTMLElement) {
     container,
     template,
     defaultModelName: 'pose_landmarker_lite',
-    defaultModelUrl: 'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task',
-    workerFactory: () => new Worker(new URL('../workers/pose-landmarker.worker.ts', import.meta.url), { type: 'module' })
+    defaultModelUrl:
+      'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task',
+    workerFactory: () =>
+      new Worker(new URL('../workers/pose-landmarker.worker.ts', import.meta.url), { type: 'module' }),
   });
 
   await activeTask.initialize();

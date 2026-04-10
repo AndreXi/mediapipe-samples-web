@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  GestureRecognizer,
-  FilesetResolver,
-  GestureRecognizerResult
-} from '@mediapipe/tasks-vision';
+import { GestureRecognizer, FilesetResolver, GestureRecognizerResult } from '@mediapipe/tasks-vision';
 
 import { BaseWorker } from './base-worker';
 
@@ -48,7 +44,7 @@ class GestureRecognizerWorker extends BaseWorker<GestureRecognizer> {
         minHandPresenceConfidence: this.currentOptions.minHandPresenceConfidence,
         minTrackingConfidence: this.currentOptions.minTrackingConfidence,
         numHands: this.currentOptions.numHands,
-        runningMode: this.currentOptions.runningMode
+        runningMode: this.currentOptions.runningMode,
       });
     }
   }
@@ -79,7 +75,7 @@ class GestureRecognizerWorker extends BaseWorker<GestureRecognizer> {
           result = this.taskInstance.recognize(bitmap);
         }
       } catch (e: any) {
-        console.error("Worker recognition error:", e);
+        console.error('Worker recognition error:', e);
         bitmap.close();
         self.postMessage({ type: 'DETECT_ERROR', error: e.message || 'Recognition failed' });
         return;
@@ -92,7 +88,7 @@ class GestureRecognizerWorker extends BaseWorker<GestureRecognizer> {
         type: 'DETECT_RESULT',
         mode: requiredMode,
         result: result,
-        inferenceTime: inferenceTime
+        inferenceTime: inferenceTime,
       });
     }
   }

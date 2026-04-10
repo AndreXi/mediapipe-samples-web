@@ -84,12 +84,12 @@ export class ClassificationResult {
 
   public updateResults(results: ClassificationItem[]) {
     this.container.innerHTML = '';
-    
+
     if (results.length === 0) {
       results = [{ label: 'No results', score: 0 }];
     }
 
-    results.forEach(result => {
+    results.forEach((result) => {
       const scorePercent = Math.round(result.score * 100);
       const row = document.createElement('div');
       row.className = 'classification-item';

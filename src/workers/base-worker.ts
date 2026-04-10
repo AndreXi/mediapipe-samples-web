@@ -1,4 +1,3 @@
-
 /**
  * Copyright 2026 The MediaPipe Authors.
  *
@@ -11,7 +10,7 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and 
+ * See the License for the specific language governing permissions and
  *limitations under the License.
  */
 
@@ -33,7 +32,6 @@ if (typeof (self as any).custom_dbg === 'undefined') {
     console.log('[MediaPipe Debug]:', text);
   };
 }
-
 
 export abstract class BaseWorker<T> {
   protected taskInstance: T | undefined;
@@ -65,7 +63,7 @@ export abstract class BaseWorker<T> {
     const { type } = event.data;
 
     while (this.isProcessing) {
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await new Promise((resolve) => setTimeout(resolve, 10));
     }
     this.isProcessing = true;
 
@@ -79,13 +77,11 @@ export abstract class BaseWorker<T> {
 
         const payload = this.getInitPayload();
         self.postMessage({ type: 'INIT_DONE', ...payload });
-
       } else if (type === 'SET_OPTIONS') {
         const { type: _type, ...optionsToUpdate } = event.data;
         Object.assign(this.currentOptions, optionsToUpdate);
         await this.updateOptions(optionsToUpdate);
         self.postMessage({ type: 'OPTIONS_UPDATED' });
-
       } else if (type === 'CLEANUP') {
         if (this.taskInstance) {
           (this.taskInstance as any).close?.();
@@ -96,7 +92,7 @@ export abstract class BaseWorker<T> {
         await this.handleCustomMessage(event.data);
       }
     } catch (error: any) {
-      console.error("Worker Error:", error);
+      console.error('Worker Error:', error);
       self.postMessage({ type: 'ERROR', error: error?.message || String(error) });
     } finally {
       this.isProcessing = false;
@@ -162,7 +158,9 @@ export abstract class BaseWorker<T> {
     return new URL(`${formattedBasePath}wasm`, self.location.origin).href.replace(/\/$/, '');
   }
 
-  protected updateOptions(_?: any): Promise<void> { return Promise.resolve(); }
+  protected updateOptions(_?: any): Promise<void> {
+    return Promise.resolve();
+  }
 
   protected abstract initializeTask(data?: any): Promise<void>;
   protected abstract handleCustomMessage(data: any): Promise<void>;

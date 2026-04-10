@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  ImageEmbedder,
-  FilesetResolver,
-  ImageEmbedderResult
-} from '@mediapipe/tasks-vision';
+import { ImageEmbedder, FilesetResolver, ImageEmbedderResult } from '@mediapipe/tasks-vision';
 import { BaseWorker } from './base-worker';
 
 class ImageEmbedderWorker extends BaseWorker<ImageEmbedder> {
@@ -31,7 +27,7 @@ class ImageEmbedderWorker extends BaseWorker<ImageEmbedder> {
       baseOptions: {
         modelAssetBuffer: new Uint8Array(modelBuffer),
         delegate: this.currentOptions.delegate === 'GPU' ? 'GPU' : 'CPU',
-      }
+      },
     });
   }
 
@@ -65,10 +61,10 @@ class ImageEmbedderWorker extends BaseWorker<ImageEmbedder> {
           result1,
           result2,
           similarity,
-          timestampMs: data.timestampMs
+          timestampMs: data.timestampMs,
         });
       } catch (error: any) {
-        console.error("Worker embed error:", error);
+        console.error('Worker embed error:', error);
         self.postMessage({ type: 'ERROR', error: error.message || 'Embed failed' });
       }
     }

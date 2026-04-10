@@ -69,13 +69,12 @@ class HandLandmarkerTask extends BaseVisionTask {
 
     // Custom model options for Hand Landmarker
     this.models = {
-      'hand_landmarker': 'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task'
+      hand_landmarker:
+        'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
     };
 
     if (this.modelSelector) {
-      this.modelSelector.updateOptions([
-        { label: 'Hand Landmarker', value: 'hand_landmarker', isDefault: true }
-      ]);
+      this.modelSelector.updateOptions([{ label: 'Hand Landmarker', value: 'hand_landmarker', isDefault: true }]);
     }
   }
 
@@ -141,10 +140,10 @@ class HandLandmarkerTask extends BaseVisionTask {
 
   private drawLandmarks(drawingUtils: DrawingUtils, landmarks: any[]) {
     drawingUtils.drawConnectors(landmarks, HandLandmarker.HAND_CONNECTIONS, {
-      color: "#00FF00",
-      lineWidth: 5
+      color: '#00FF00',
+      lineWidth: 5,
     });
-    drawingUtils.drawLandmarks(landmarks, { color: "#FF0000", lineWidth: 2 });
+    drawingUtils.drawLandmarks(landmarks, { color: '#FF0000', lineWidth: 2 });
   }
 }
 
@@ -156,8 +155,10 @@ export async function setupHandLandmarker(container: HTMLElement) {
     container,
     template,
     defaultModelName: 'hand_landmarker',
-    defaultModelUrl: 'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
-    workerFactory: () => new Worker(new URL('../workers/hand-landmarker.worker.ts', import.meta.url), { type: 'module' })
+    defaultModelUrl:
+      'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
+    workerFactory: () =>
+      new Worker(new URL('../workers/hand-landmarker.worker.ts', import.meta.url), { type: 'module' }),
   });
 
   await activeTask.initialize();

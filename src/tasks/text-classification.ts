@@ -46,7 +46,7 @@ class TextClassificationTask extends BaseTextTask {
 
     // Sample Buttons
     const sampleBtns = this.container.querySelectorAll('.sample-btn');
-    sampleBtns.forEach(btn => {
+    sampleBtns.forEach((btn) => {
       btn.addEventListener('click', (e) => {
         const text = (e.currentTarget as HTMLElement).dataset.text;
         if (text) {
@@ -67,14 +67,16 @@ class TextClassificationTask extends BaseTextTask {
     }
 
     this.models = {
-      'bert_classifier': 'https://storage.googleapis.com/mediapipe-models/text_classifier/bert_classifier/float32/1/bert_classifier.tflite',
-      'average_word_classifier': 'https://storage.googleapis.com/mediapipe-models/text_classifier/average_word_classifier/float32/1/average_word_classifier.tflite'
+      bert_classifier:
+        'https://storage.googleapis.com/mediapipe-models/text_classifier/bert_classifier/float32/1/bert_classifier.tflite',
+      average_word_classifier:
+        'https://storage.googleapis.com/mediapipe-models/text_classifier/average_word_classifier/float32/1/average_word_classifier.tflite',
     };
 
     if (this.modelSelector) {
       this.modelSelector.updateOptions([
         { label: 'BERT Classifier', value: 'bert_classifier', isDefault: true },
-        { label: 'Average Word Classifier', value: 'average_word_classifier' }
+        { label: 'Average Word Classifier', value: 'average_word_classifier' },
       ]);
     }
   }
@@ -88,7 +90,7 @@ class TextClassificationTask extends BaseTextTask {
 
   protected override getWorkerInitParams(): Record<string, any> {
     return {
-      maxResults: this.maxResults
+      maxResults: this.maxResults,
     };
   }
 
@@ -107,7 +109,7 @@ class TextClassificationTask extends BaseTextTask {
       case 'ERROR':
         if (this.classifyBtn) {
           this.classifyBtn.disabled = false;
-          this.classifyBtn.innerText = "Retry";
+          this.classifyBtn.innerText = 'Retry';
         }
         super.handleWorkerMessage(event);
         break;
@@ -134,19 +136,20 @@ class TextClassificationTask extends BaseTextTask {
     this.worker.postMessage({
       type: 'CLASSIFY',
       text: text,
-      timestampMs: performance.now()
+      timestampMs: performance.now(),
     });
   }
 
   private displayResults(result: any) {
-    if (!result || !result.classifications || result.classifications.length === 0 || !this.classificationResultUI) return;
+    if (!result || !result.classifications || result.classifications.length === 0 || !this.classificationResultUI)
+      return;
 
     const categories = result.classifications[0].categories;
     categories.sort((a: any, b: any) => b.score - a.score);
 
     const items: ClassificationItem[] = categories.map((c: any) => ({
       label: c.categoryName,
-      score: c.score
+      score: c.score,
     }));
 
     this.classificationResultUI.updateResults(items);
@@ -160,9 +163,11 @@ export async function setupTextClassification(container: HTMLElement) {
     container,
     template,
     defaultModelName: 'bert_classifier',
-    defaultModelUrl: 'https://storage.googleapis.com/mediapipe-models/text_classifier/bert_classifier/float32/1/bert_classifier.tflite',
-    workerFactory: () => new Worker(new URL('../workers/text-classification.worker.ts', import.meta.url), { type: 'module' }),
-    defaultDelegate: 'CPU'
+    defaultModelUrl:
+      'https://storage.googleapis.com/mediapipe-models/text_classifier/bert_classifier/float32/1/bert_classifier.tflite',
+    workerFactory: () =>
+      new Worker(new URL('../workers/text-classification.worker.ts', import.meta.url), { type: 'module' }),
+    defaultDelegate: 'CPU',
   });
 
   await activeTask.initialize();

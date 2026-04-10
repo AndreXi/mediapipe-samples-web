@@ -42,7 +42,7 @@ class ImageEmbedderTask extends BaseVisionTask {
     const setupUpload = (inputElementId: string, img: HTMLImageElement, display: HTMLElement) => {
       const input = document.getElementById(inputElementId) as HTMLInputElement;
       if (!input) return;
-      
+
       input.addEventListener('change', (e) => {
         const file = (e.target as HTMLInputElement).files?.[0];
         if (file) {
@@ -64,7 +64,7 @@ class ImageEmbedderTask extends BaseVisionTask {
     const triggerUpload2 = setupUpload('image-upload-2', this.image2!, display2);
 
     // Attach listeners to samples
-    document.querySelectorAll('.sample-btn').forEach(btn => {
+    document.querySelectorAll('.sample-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
         const targetId = (btn as HTMLElement).dataset.target;
         const src = (btn as HTMLElement).dataset.src;
@@ -74,7 +74,7 @@ class ImageEmbedderTask extends BaseVisionTask {
     });
 
     // Attach listeners to upload buttons
-    document.querySelectorAll('.upload-btn').forEach(btn => {
+    document.querySelectorAll('.upload-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
         const targetId = (btn as HTMLElement).dataset.target;
         if (targetId === '1' && triggerUpload1) triggerUpload1();
@@ -94,14 +94,16 @@ class ImageEmbedderTask extends BaseVisionTask {
     if (this.image2) this.image2.onload = () => this.checkEnableButton();
 
     this.models = {
-      'mobilenet_v3_small': 'https://storage.googleapis.com/mediapipe-models/image_embedder/mobilenet_v3_small/float32/1/mobilenet_v3_small.tflite',
-      'mobilenet_v3_large': 'https://storage.googleapis.com/mediapipe-models/image_embedder/mobilenet_v3_large/float32/1/mobilenet_v3_large.tflite'
+      mobilenet_v3_small:
+        'https://storage.googleapis.com/mediapipe-models/image_embedder/mobilenet_v3_small/float32/1/mobilenet_v3_small.tflite',
+      mobilenet_v3_large:
+        'https://storage.googleapis.com/mediapipe-models/image_embedder/mobilenet_v3_large/float32/1/mobilenet_v3_large.tflite',
     };
 
     if (this.modelSelector) {
       this.modelSelector.updateOptions([
         { label: 'MobileNet V3 Small', value: 'mobilenet_v3_small', isDefault: true },
-        { label: 'MobileNet V3 Large', value: 'mobilenet_v3_large' }
+        { label: 'MobileNet V3 Large', value: 'mobilenet_v3_large' },
       ]);
     }
   }
@@ -160,12 +162,15 @@ class ImageEmbedderTask extends BaseVisionTask {
 
     const bitmap2 = await createImageBitmap(img2);
 
-    this.worker.postMessage({
-      type: 'EMBED',
-      image1: bitmap1,
-      image2: bitmap2,
-      timestampMs: performance.now()
-    }, [bitmap1, bitmap2]);
+    this.worker.postMessage(
+      {
+        type: 'EMBED',
+        image1: bitmap1,
+        image2: bitmap2,
+        timestampMs: performance.now(),
+      },
+      [bitmap1, bitmap2]
+    );
   }
 
   private displayResults(similarity: number) {
@@ -181,8 +186,8 @@ class ImageEmbedderTask extends BaseVisionTask {
     return {};
   }
 
-  protected override displayImageResult() { }
-  protected override displayVideoResult() { }
+  protected override displayImageResult() {}
+  protected override displayVideoResult() {}
 }
 
 let activeTask: ImageEmbedderTask | null = null;
@@ -192,9 +197,11 @@ export async function setupImageEmbedder(container: HTMLElement) {
     container,
     template,
     defaultModelName: 'mobilenet_v3_small',
-    defaultModelUrl: 'https://storage.googleapis.com/mediapipe-models/image_embedder/mobilenet_v3_small/float32/1/mobilenet_v3_small.tflite',
-    workerFactory: () => new Worker(new URL('../workers/image-embedder.worker.ts', import.meta.url), { type: 'module' }),
-    defaultDelegate: 'CPU'
+    defaultModelUrl:
+      'https://storage.googleapis.com/mediapipe-models/image_embedder/mobilenet_v3_small/float32/1/mobilenet_v3_small.tflite',
+    workerFactory: () =>
+      new Worker(new URL('../workers/image-embedder.worker.ts', import.meta.url), { type: 'module' }),
+    defaultDelegate: 'CPU',
   });
 
   await activeTask.initialize();

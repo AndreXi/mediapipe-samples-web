@@ -17,7 +17,7 @@
 import { ViewToggle } from './view-toggle';
 import { BaseTask, BaseTaskOptions } from './base-task';
 
-export interface BaseAudioTaskOptions extends BaseTaskOptions { }
+export interface BaseAudioTaskOptions extends BaseTaskOptions {}
 
 export abstract class BaseAudioTask extends BaseTask {
   protected runningMode: 'AUDIO_STREAM' | 'AUDIO_CLIPS' = 'AUDIO_STREAM';
@@ -61,7 +61,7 @@ export abstract class BaseAudioTask extends BaseTask {
       'view-mode-toggle',
       [
         { label: 'Microphone', value: 'mic' },
-        { label: 'Audio File', value: 'file' }
+        { label: 'Audio File', value: 'file' },
       ],
       'mic',
       (value) => {
@@ -194,7 +194,7 @@ export abstract class BaseAudioTask extends BaseTask {
       this.mediaStreamSource = undefined;
     }
     if (this.stream) {
-      this.stream.getTracks().forEach(t => t.stop());
+      this.stream.getTracks().forEach((t) => t.stop());
       this.stream = undefined;
     }
     if (this.audioContext) {
@@ -214,11 +214,11 @@ export abstract class BaseAudioTask extends BaseTask {
   protected override getWorkerInitParamsInner(): Record<string, any> {
     return {
       runningMode: this.runningMode,
-      ...this.getWorkerInitParams()
+      ...this.getWorkerInitParams(),
     };
   }
 
-  protected onViewSwitched(_: 'MIC' | 'FILE'): void { }
+  protected onViewSwitched(_: 'MIC' | 'FILE'): void {}
   protected abstract clearResults(): void;
   protected abstract onAudioFileLoaded(file: File): void;
   protected abstract processAudioData(data: Float32Array, sampleRate: number): void;

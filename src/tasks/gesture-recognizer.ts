@@ -32,7 +32,7 @@ class GestureRecognizerTask extends BaseVisionTask {
   private minTrackingConfidence = 0.5;
 
   protected override onInitializeUI() {
-    this.classificationResultUI = new ClassificationResult('classification-results'); 
+    this.classificationResultUI = new ClassificationResult('classification-results');
 
     // Confidence Sliders
     const setupSlider = (id: string, onChange: (val: number) => void) => {
@@ -73,13 +73,12 @@ class GestureRecognizerTask extends BaseVisionTask {
 
     // Custom model options
     this.models = {
-      'gesture_recognizer': 'https://storage.googleapis.com/mediapipe-models/gesture_recognizer/gesture_recognizer/float16/1/gesture_recognizer.task'
+      gesture_recognizer:
+        'https://storage.googleapis.com/mediapipe-models/gesture_recognizer/gesture_recognizer/float16/1/gesture_recognizer.task',
     };
 
     if (this.modelSelector) {
-      this.modelSelector.updateOptions([
-        { label: 'Gesture Recognizer', value: 'gesture_recognizer', isDefault: true }
-      ]);
+      this.modelSelector.updateOptions([{ label: 'Gesture Recognizer', value: 'gesture_recognizer', isDefault: true }]);
     }
   }
 
@@ -118,8 +117,8 @@ class GestureRecognizerTask extends BaseVisionTask {
       else this.drawingUtils = new DrawingUtils(ctx);
 
       for (const landmark of result.landmarks) {
-        this.drawingUtils.drawConnectors(landmark, HandLandmarker.HAND_CONNECTIONS, { color: "#00FF00", lineWidth: 5 });
-        this.drawingUtils.drawLandmarks(landmark, { color: "#FF0000", lineWidth: 2 });
+        this.drawingUtils.drawConnectors(landmark, HandLandmarker.HAND_CONNECTIONS, { color: '#00FF00', lineWidth: 5 });
+        this.drawingUtils.drawLandmarks(landmark, { color: '#FF0000', lineWidth: 2 });
       }
     }
 
@@ -138,8 +137,8 @@ class GestureRecognizerTask extends BaseVisionTask {
       else this.drawingUtils = new DrawingUtils(this.canvasCtx);
 
       for (const landmark of result.landmarks) {
-        this.drawingUtils.drawConnectors(landmark, HandLandmarker.HAND_CONNECTIONS, { color: "#00FF00", lineWidth: 5 });
-        this.drawingUtils.drawLandmarks(landmark, { color: "#FF0000", lineWidth: 2 });
+        this.drawingUtils.drawConnectors(landmark, HandLandmarker.HAND_CONNECTIONS, { color: '#00FF00', lineWidth: 5 });
+        this.drawingUtils.drawLandmarks(landmark, { color: '#FF0000', lineWidth: 2 });
       }
     }
 
@@ -153,12 +152,13 @@ class GestureRecognizerTask extends BaseVisionTask {
     if (result.gestures && result.gestures.length > 0) {
       const items: ClassificationItem[] = [];
       result.gestures.forEach((gestures, index) => {
-        const handedness = result.handedness && result.handedness[index] ? result.handedness[index][0].displayName : `Hand ${index + 1}`;
+        const handedness =
+          result.handedness && result.handedness[index] ? result.handedness[index][0].displayName : `Hand ${index + 1}`;
         const topGesture = gestures[0];
         if (topGesture && topGesture.categoryName !== 'None') {
           items.push({
             label: `${handedness}: ${topGesture.categoryName}`,
-            score: topGesture.score
+            score: topGesture.score,
           });
         }
       });
@@ -185,8 +185,10 @@ export async function setupGestureRecognizer(container: HTMLElement) {
     container,
     template,
     defaultModelName: 'gesture_recognizer',
-    defaultModelUrl: 'https://storage.googleapis.com/mediapipe-models/gesture_recognizer/gesture_recognizer/float16/1/gesture_recognizer.task',
-    workerFactory: () => new Worker(new URL('../workers/gesture-recognizer.worker.ts', import.meta.url), { type: 'module' })
+    defaultModelUrl:
+      'https://storage.googleapis.com/mediapipe-models/gesture_recognizer/gesture_recognizer/float16/1/gesture_recognizer.task',
+    workerFactory: () =>
+      new Worker(new URL('../workers/gesture-recognizer.worker.ts', import.meta.url), { type: 'module' }),
   });
 
   await activeTask.initialize();

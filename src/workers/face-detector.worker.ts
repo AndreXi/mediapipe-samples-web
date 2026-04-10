@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  FaceDetector,
-  FilesetResolver,
-  Detection,
-} from '@mediapipe/tasks-vision';
+import { FaceDetector, FilesetResolver, Detection } from '@mediapipe/tasks-vision';
 
 import { BaseWorker } from './base-worker';
 
@@ -35,7 +31,7 @@ class FaceDetectorWorker extends BaseWorker<FaceDetector> {
       },
       minDetectionConfidence: this.currentOptions.minDetectionConfidence,
       minSuppressionThreshold: this.currentOptions.minSuppressionThreshold,
-      runningMode: this.currentOptions.runningMode
+      runningMode: this.currentOptions.runningMode,
     });
   }
 
@@ -44,7 +40,7 @@ class FaceDetectorWorker extends BaseWorker<FaceDetector> {
       await this.taskInstance.setOptions({
         minDetectionConfidence: this.currentOptions.minDetectionConfidence,
         minSuppressionThreshold: this.currentOptions.minSuppressionThreshold,
-        runningMode: this.currentOptions.runningMode
+        runningMode: this.currentOptions.runningMode,
       });
     }
   }
@@ -76,7 +72,7 @@ class FaceDetectorWorker extends BaseWorker<FaceDetector> {
           detections = this.taskInstance.detect(bitmap);
         }
       } catch (e: any) {
-        console.error("Worker detection error:", e);
+        console.error('Worker detection error:', e);
         bitmap.close();
         self.postMessage({ type: 'DETECT_ERROR', error: e.message || 'Detection failed' });
         return;
@@ -89,12 +85,10 @@ class FaceDetectorWorker extends BaseWorker<FaceDetector> {
         type: 'DETECT_RESULT',
         mode: requiredMode,
         result: detections,
-        inferenceTime: inferenceTime
+        inferenceTime: inferenceTime,
       });
     }
   }
 }
 
 new FaceDetectorWorker();
-
-

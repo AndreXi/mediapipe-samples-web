@@ -26,7 +26,6 @@ class ObjectDetectionTask extends BaseVisionTask {
   private maxResults = 3;
 
   protected override onInitializeUI() {
-
     const setupSlider = (id: string, onChange: (val: number) => void) => {
       const input = document.getElementById(id) as HTMLInputElement;
       const valueDisplay = document.getElementById(`${id}-value`)!;
@@ -53,16 +52,19 @@ class ObjectDetectionTask extends BaseVisionTask {
 
     // Custom model options for Object Detection
     this.models = {
-      'efficientdet_lite0': 'https://storage.googleapis.com/mediapipe-models/object_detector/efficientdet_lite0/float32/1/efficientdet_lite0.tflite',
-      'efficientdet_lite2': 'https://storage.googleapis.com/mediapipe-models/object_detector/efficientdet_lite2/float32/1/efficientdet_lite2.tflite',
-      'ssd_mobilenet_v2': 'https://storage.googleapis.com/mediapipe-models/object_detector/ssd_mobilenet_v2/float32/1/ssd_mobilenet_v2.tflite'
+      efficientdet_lite0:
+        'https://storage.googleapis.com/mediapipe-models/object_detector/efficientdet_lite0/float32/1/efficientdet_lite0.tflite',
+      efficientdet_lite2:
+        'https://storage.googleapis.com/mediapipe-models/object_detector/efficientdet_lite2/float32/1/efficientdet_lite2.tflite',
+      ssd_mobilenet_v2:
+        'https://storage.googleapis.com/mediapipe-models/object_detector/ssd_mobilenet_v2/float32/1/ssd_mobilenet_v2.tflite',
     };
 
     if (this.modelSelector) {
       this.modelSelector.updateOptions([
         { label: 'EfficientDet-Lite0', value: 'efficientdet_lite0', isDefault: true },
         { label: 'EfficientDet-Lite2', value: 'efficientdet_lite2' },
-        { label: 'SSD MobileNet V2', value: 'ssd_mobilenet_v2' }
+        { label: 'SSD MobileNet V2', value: 'ssd_mobilenet_v2' },
       ]);
     }
   }
@@ -126,7 +128,7 @@ class ObjectDetectionTask extends BaseVisionTask {
     drawingUtils.drawBoundingBox(detection.boundingBox!, {
       color: '#007f8b',
       lineWidth: 4,
-      fillColor: 'transparent'
+      fillColor: 'transparent',
     });
 
     const { originX, originY } = detection.boundingBox!;
@@ -143,7 +145,7 @@ class ObjectDetectionTask extends BaseVisionTask {
     if (mirror) {
       ctx.save();
       const centerX = x + (textWidth + 10) / 2;
-      const centerY = originY + 12.5; 
+      const centerY = originY + 12.5;
 
       ctx.translate(centerX, centerY);
       ctx.scale(-1, 1);
@@ -169,8 +171,10 @@ export async function setupObjectDetection(container: HTMLElement) {
     container,
     template,
     defaultModelName: 'efficientdet_lite0',
-    defaultModelUrl: 'https://storage.googleapis.com/mediapipe-models/object_detector/efficientdet_lite0/float32/1/efficientdet_lite0.tflite',
-    workerFactory: () => new Worker(new URL('../workers/object-detection.worker.ts', import.meta.url), { type: 'module' })
+    defaultModelUrl:
+      'https://storage.googleapis.com/mediapipe-models/object_detector/efficientdet_lite0/float32/1/efficientdet_lite0.tflite',
+    workerFactory: () =>
+      new Worker(new URL('../workers/object-detection.worker.ts', import.meta.url), { type: 'module' }),
   });
 
   await activeTask.initialize();

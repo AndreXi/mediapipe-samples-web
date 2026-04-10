@@ -127,9 +127,7 @@ export abstract class BaseTask {
   protected setupUI() {
     this.modelSelector = new ModelSelector(
       'model-selector-container',
-      [
-        { label: this.options.defaultModelName, value: this.options.defaultModelName, isDefault: true }
-      ],
+      [{ label: this.options.defaultModelName, value: this.options.defaultModelName, isDefault: true }],
       async (selection) => {
         if (selection.type === 'standard') {
           this.currentModel = selection.value;
@@ -164,7 +162,7 @@ export abstract class BaseTask {
       modelAssetPath: modelPath,
       delegate: this.currentDelegate,
       baseUrl,
-      ...initParams
+      ...initParams,
     });
   }
 
@@ -192,6 +190,6 @@ export abstract class BaseTask {
     this.isWorkerReady = false;
   }
 
-  protected onInitializeUI(): void { }
+  protected onInitializeUI(): void {}
   protected abstract getWorkerInitParams(): Record<string, any>;
 }

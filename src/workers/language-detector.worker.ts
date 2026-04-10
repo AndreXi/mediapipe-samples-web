@@ -31,7 +31,7 @@ class LanguageDetectorWorker extends BaseWorker<LanguageDetector> {
         delegate: this.currentOptions.delegate === 'GPU' ? 'GPU' : 'CPU',
       },
       maxResults: this.currentOptions.maxResults,
-      scoreThreshold: this.currentOptions.scoreThreshold
+      scoreThreshold: this.currentOptions.scoreThreshold,
     });
   }
 
@@ -44,7 +44,7 @@ class LanguageDetectorWorker extends BaseWorker<LanguageDetector> {
         self.postMessage({
           type: 'DETECT_RESULT',
           result,
-          timestampMs: data.timestampMs
+          timestampMs: data.timestampMs,
         });
       } catch (error: any) {
         self.postMessage({ type: 'ERROR', error: error.message || String(error) });

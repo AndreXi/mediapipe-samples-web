@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  TextClassifier,
-  FilesetResolver
-} from '@mediapipe/tasks-text';
+import { TextClassifier, FilesetResolver } from '@mediapipe/tasks-text';
 import { BaseWorker } from './base-worker';
 
 class TextClassifierWorker extends BaseWorker<TextClassifier> {
@@ -48,10 +45,10 @@ class TextClassifierWorker extends BaseWorker<TextClassifier> {
         self.postMessage({
           type: 'CLASSIFY_RESULT',
           result,
-          timestampMs: data.timestampMs
+          timestampMs: data.timestampMs,
         });
       } catch (error: any) {
-        console.error("Worker classify error:", error);
+        console.error('Worker classify error:', error);
         self.postMessage({ type: 'ERROR', error: error.message || 'Classification failed' });
       }
     }

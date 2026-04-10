@@ -42,7 +42,7 @@ class TextEmbeddingTask extends BaseTextTask {
 
     // Sample Buttons (Pairs)
     const sampleBtns = this.container.querySelectorAll('.sample-btn');
-    sampleBtns.forEach(btn => {
+    sampleBtns.forEach((btn) => {
       btn.addEventListener('click', (e) => {
         const el = e.currentTarget as HTMLElement;
         const t1 = el.dataset.text1;
@@ -57,7 +57,7 @@ class TextEmbeddingTask extends BaseTextTask {
 
     // Individual Sample Chips
     const sampleChips = this.container.querySelectorAll('.sample-chip');
-    sampleChips.forEach(chip => {
+    sampleChips.forEach((chip) => {
       chip.addEventListener('click', (e) => {
         const el = e.currentTarget as HTMLElement;
         const targetId = el.dataset.target;
@@ -66,7 +66,7 @@ class TextEmbeddingTask extends BaseTextTask {
           const targetInput = document.getElementById(targetId) as HTMLTextAreaElement;
           if (targetInput) {
             targetInput.value = text;
-    // Trigger computation if both have values
+            // Trigger computation if both have values
             if (this.textInput1.value.trim() && this.textInput2.value.trim()) {
               this.computeSimilarity(this.textInput1.value, this.textInput2.value);
             }
@@ -76,12 +76,13 @@ class TextEmbeddingTask extends BaseTextTask {
     });
 
     this.models = {
-      'universal_sentence_encoder': 'https://storage.googleapis.com/mediapipe-models/text_embedder/universal_sentence_encoder/float32/1/universal_sentence_encoder.tflite'
+      universal_sentence_encoder:
+        'https://storage.googleapis.com/mediapipe-models/text_embedder/universal_sentence_encoder/float32/1/universal_sentence_encoder.tflite',
     };
 
     if (this.modelSelector) {
       this.modelSelector.updateOptions([
-        { label: 'Universal Sentence Encoder', value: 'universal_sentence_encoder', isDefault: true }
+        { label: 'Universal Sentence Encoder', value: 'universal_sentence_encoder', isDefault: true },
       ]);
     }
   }
@@ -112,7 +113,7 @@ class TextEmbeddingTask extends BaseTextTask {
       case 'ERROR':
         if (this.embedBtn) {
           this.embedBtn.disabled = false;
-          this.embedBtn.innerText = "Retry";
+          this.embedBtn.innerText = 'Retry';
         }
         super.handleWorkerMessage(event);
         break;
@@ -140,7 +141,7 @@ class TextEmbeddingTask extends BaseTextTask {
       type: 'EMBED',
       text1: text1,
       text2: text2,
-      timestampMs: performance.now()
+      timestampMs: performance.now(),
     });
   }
 
@@ -162,9 +163,10 @@ export async function setupTextEmbedding(container: HTMLElement) {
     container,
     template,
     defaultModelName: 'universal_sentence_encoder',
-    defaultModelUrl: 'https://storage.googleapis.com/mediapipe-models/text_embedder/universal_sentence_encoder/float32/1/universal_sentence_encoder.tflite',
+    defaultModelUrl:
+      'https://storage.googleapis.com/mediapipe-models/text_embedder/universal_sentence_encoder/float32/1/universal_sentence_encoder.tflite',
     workerFactory: () => new Worker(new URL('../workers/text-embedding.worker', import.meta.url), { type: 'module' }),
-    defaultDelegate: 'CPU'
+    defaultDelegate: 'CPU',
   });
 
   await activeTask.initialize();

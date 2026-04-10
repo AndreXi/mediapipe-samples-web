@@ -55,14 +55,16 @@ class ImageClassifierTask extends BaseVisionTask {
 
     // Custom model options
     this.models = {
-      'efficientnet_lite0': 'https://storage.googleapis.com/mediapipe-models/image_classifier/efficientnet_lite0/float32/1/efficientnet_lite0.tflite',
-      'efficientnet_lite2': 'https://storage.googleapis.com/mediapipe-models/image_classifier/efficientnet_lite2/float32/1/efficientnet_lite2.tflite'
+      efficientnet_lite0:
+        'https://storage.googleapis.com/mediapipe-models/image_classifier/efficientnet_lite0/float32/1/efficientnet_lite0.tflite',
+      efficientnet_lite2:
+        'https://storage.googleapis.com/mediapipe-models/image_classifier/efficientnet_lite2/float32/1/efficientnet_lite2.tflite',
     };
 
     if (this.modelSelector) {
       this.modelSelector.updateOptions([
         { label: 'EfficientNet-Lite0', value: 'efficientnet_lite0', isDefault: true },
-        { label: 'EfficientNet-Lite2', value: 'efficientnet_lite2' }
+        { label: 'EfficientNet-Lite2', value: 'efficientnet_lite2' },
       ]);
     }
   }
@@ -96,9 +98,9 @@ class ImageClassifierTask extends BaseVisionTask {
 
     if (result.classifications && result.classifications.length > 0) {
       const categories = result.classifications[0].categories;
-      const items: ClassificationItem[] = categories.map(c => ({
+      const items: ClassificationItem[] = categories.map((c) => ({
         label: c.categoryName,
-        score: c.score
+        score: c.score,
       }));
       this.classificationResultUI.updateResults(items);
     } else {
@@ -115,9 +117,11 @@ export async function setupImageClassifier(container: HTMLElement) {
     container,
     template,
     defaultModelName: 'efficientnet_lite0',
-    defaultModelUrl: 'https://storage.googleapis.com/mediapipe-models/image_classifier/efficientnet_lite0/float32/1/efficientnet_lite0.tflite',
-    workerFactory: () => new Worker(new URL('../workers/image-classifier.worker.ts', import.meta.url), { type: 'module' }),
-    defaultDelegate: 'GPU' // Image classifier defaults to GPU in original code
+    defaultModelUrl:
+      'https://storage.googleapis.com/mediapipe-models/image_classifier/efficientnet_lite0/float32/1/efficientnet_lite0.tflite',
+    workerFactory: () =>
+      new Worker(new URL('../workers/image-classifier.worker.ts', import.meta.url), { type: 'module' }),
+    defaultDelegate: 'GPU', // Image classifier defaults to GPU in original code
   });
 
   await activeTask.initialize();

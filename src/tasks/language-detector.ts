@@ -28,7 +28,6 @@ class LanguageDetectorTask extends BaseTextTask {
   private maxResults = 3;
   private scoreThreshold = 0.0;
 
-
   protected override onInitializeUI() {
     this.detectBtn = document.getElementById('detect-btn') as HTMLButtonElement;
     this.textInput = document.getElementById('text-input') as HTMLTextAreaElement;
@@ -44,7 +43,7 @@ class LanguageDetectorTask extends BaseTextTask {
 
     // Sample Buttons
     const sampleBtns = this.container.querySelectorAll('.sample-btn');
-    sampleBtns.forEach(btn => {
+    sampleBtns.forEach((btn) => {
       btn.addEventListener('click', (e) => {
         const text = (e.currentTarget as HTMLElement).dataset.text;
         if (text) {
@@ -75,13 +74,12 @@ class LanguageDetectorTask extends BaseTextTask {
     }
 
     this.models = {
-      'language_detector': 'https://storage.googleapis.com/mediapipe-models/language_detector/language_detector/float32/1/language_detector.tflite'
+      language_detector:
+        'https://storage.googleapis.com/mediapipe-models/language_detector/language_detector/float32/1/language_detector.tflite',
     };
 
     if (this.modelSelector) {
-      this.modelSelector.updateOptions([
-        { label: 'Language Detector', value: 'language_detector', isDefault: true }
-      ]);
+      this.modelSelector.updateOptions([{ label: 'Language Detector', value: 'language_detector', isDefault: true }]);
     }
   }
 
@@ -95,7 +93,7 @@ class LanguageDetectorTask extends BaseTextTask {
   protected override getWorkerInitParams(): Record<string, any> {
     return {
       maxResults: this.maxResults,
-      scoreThreshold: this.scoreThreshold
+      scoreThreshold: this.scoreThreshold,
     };
   }
 
@@ -114,7 +112,7 @@ class LanguageDetectorTask extends BaseTextTask {
       case 'ERROR':
         if (this.detectBtn) {
           this.detectBtn.disabled = false;
-          this.detectBtn.innerText = "Retry";
+          this.detectBtn.innerText = 'Retry';
         }
         super.handleWorkerMessage(event);
         break;
@@ -141,7 +139,7 @@ class LanguageDetectorTask extends BaseTextTask {
     this.worker.postMessage({
       type: 'DETECT',
       text: text,
-      timestampMs: performance.now()
+      timestampMs: performance.now(),
     });
   }
 
@@ -179,9 +177,11 @@ export async function setupLanguageDetector(container: HTMLElement) {
     container,
     template,
     defaultModelName: 'language_detector',
-    defaultModelUrl: 'https://storage.googleapis.com/mediapipe-models/language_detector/language_detector/float32/1/language_detector.tflite',
-    workerFactory: () => new Worker(new URL('../workers/language-detector.worker', import.meta.url), { type: 'module' }),
-    defaultDelegate: 'CPU'
+    defaultModelUrl:
+      'https://storage.googleapis.com/mediapipe-models/language_detector/language_detector/float32/1/language_detector.tflite',
+    workerFactory: () =>
+      new Worker(new URL('../workers/language-detector.worker', import.meta.url), { type: 'module' }),
+    defaultDelegate: 'CPU',
   });
 
   await activeTask.initialize();

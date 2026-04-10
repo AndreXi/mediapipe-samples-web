@@ -17,7 +17,7 @@
 import { ViewToggle } from './view-toggle';
 import { BaseTask, BaseTaskOptions } from './base-task';
 
-export interface BaseVisionTaskOptions extends BaseTaskOptions { }
+export interface BaseVisionTaskOptions extends BaseTaskOptions {}
 
 export abstract class BaseVisionTask extends BaseTask {
   protected runningMode: 'IMAGE' | 'VIDEO' = 'IMAGE';
@@ -148,7 +148,7 @@ export abstract class BaseVisionTask extends BaseTask {
       'view-mode-toggle',
       [
         { label: 'Webcam', value: 'video' },
-        { label: 'Image', value: 'image' }
+        { label: 'Image', value: 'image' },
       ],
       initialMode.toLowerCase(),
       (value) => {
@@ -215,7 +215,7 @@ export abstract class BaseVisionTask extends BaseTask {
   protected override getWorkerInitParamsInner(): Record<string, any> {
     return {
       runningMode: this.runningMode,
-      ...this.getWorkerInitParams()
+      ...this.getWorkerInitParams(),
     };
   }
 
@@ -237,11 +237,14 @@ export abstract class BaseVisionTask extends BaseTask {
 
     const bitmap = await createImageBitmap(image);
     this.updateStatus(`Processing image...`);
-    this.worker.postMessage({
-      type: 'DETECT_IMAGE',
-      bitmap: bitmap,
-      timestampMs: performance.now()
-    }, [bitmap]);
+    this.worker.postMessage(
+      {
+        type: 'DETECT_IMAGE',
+        bitmap: bitmap,
+        timestampMs: performance.now(),
+      },
+      [bitmap]
+    );
   }
 
   protected async enableCam() {
@@ -349,13 +352,16 @@ export abstract class BaseVisionTask extends BaseTask {
         const timestampMs = now > this.lastTimestampMs ? now : this.lastTimestampMs + 1;
         this.lastTimestampMs = timestampMs;
 
-        this.worker?.postMessage({
-          type: 'DETECT_VIDEO',
-          bitmap: bitmap,
-          timestampMs: timestampMs
-        }, [bitmap]);
+        this.worker?.postMessage(
+          {
+            type: 'DETECT_VIDEO',
+            bitmap: bitmap,
+            timestampMs: timestampMs,
+          },
+          [bitmap]
+        );
       } catch (e) {
-        console.error("Failed to create ImageBitmap from video", e);
+        console.error('Failed to create ImageBitmap from video', e);
         this.animationFrameId = window.requestAnimationFrame(this.predictWebcam.bind(this));
       }
     } else {

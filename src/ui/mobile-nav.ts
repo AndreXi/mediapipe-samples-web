@@ -39,7 +39,7 @@ export function renderMobileNav(container: HTMLElement) {
   `;
 
   const select = document.getElementById('mobile-task-select') as HTMLSelectElement;
-  
+
   // Sync select with current hash
   const updateSelect = () => {
     const hash = window.location.hash || '#/vision/object_detector';

@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  ObjectDetector,
-  FilesetResolver,
-  Detection,
-} from '@mediapipe/tasks-vision';
+import { ObjectDetector, FilesetResolver, Detection } from '@mediapipe/tasks-vision';
 import { BaseWorker } from './base-worker';
 
 class ObjectDetectionWorker extends BaseWorker<ObjectDetector> {
@@ -43,7 +39,7 @@ class ObjectDetectionWorker extends BaseWorker<ObjectDetector> {
       await this.taskInstance.setOptions({
         scoreThreshold: this.currentOptions.scoreThreshold,
         maxResults: this.currentOptions.maxResults,
-        runningMode: this.currentOptions.runningMode
+        runningMode: this.currentOptions.runningMode,
       });
     }
   }
@@ -75,7 +71,7 @@ class ObjectDetectionWorker extends BaseWorker<ObjectDetector> {
           detections = this.taskInstance.detect(bitmap);
         }
       } catch (e: any) {
-        console.error("Worker detection error:", e);
+        console.error('Worker detection error:', e);
         bitmap.close();
         self.postMessage({ type: 'DETECT_ERROR', error: e.message || 'Detection failed' });
         return;
@@ -88,7 +84,7 @@ class ObjectDetectionWorker extends BaseWorker<ObjectDetector> {
         type: 'DETECT_RESULT',
         mode: requiredMode,
         result: detections,
-        inferenceTime: inferenceTime
+        inferenceTime: inferenceTime,
       });
     }
   }

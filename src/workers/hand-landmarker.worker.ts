@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  HandLandmarker,
-  FilesetResolver,
-  HandLandmarkerResult
-} from '@mediapipe/tasks-vision';
+import { HandLandmarker, FilesetResolver, HandLandmarkerResult } from '@mediapipe/tasks-vision';
 
 import { BaseWorker } from './base-worker';
 
@@ -48,7 +44,7 @@ class HandLandmarkerWorker extends BaseWorker<HandLandmarker> {
         minHandDetectionConfidence: this.currentOptions.minHandDetectionConfidence,
         minHandPresenceConfidence: this.currentOptions.minHandPresenceConfidence,
         minTrackingConfidence: this.currentOptions.minTrackingConfidence,
-        runningMode: this.currentOptions.runningMode
+        runningMode: this.currentOptions.runningMode,
       });
     }
   }
@@ -80,7 +76,7 @@ class HandLandmarkerWorker extends BaseWorker<HandLandmarker> {
           result = this.taskInstance.detect(bitmap);
         }
       } catch (e: any) {
-        console.error("Worker detection error:", e);
+        console.error('Worker detection error:', e);
         bitmap.close();
         self.postMessage({ type: 'DETECT_ERROR', error: e.message || 'Detection failed' });
         return;
@@ -93,7 +89,7 @@ class HandLandmarkerWorker extends BaseWorker<HandLandmarker> {
         type: 'DETECT_RESULT',
         mode: requiredMode,
         result: result,
-        inferenceTime: inferenceTime
+        inferenceTime: inferenceTime,
       });
     }
   }

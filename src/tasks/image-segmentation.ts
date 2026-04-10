@@ -22,34 +22,37 @@ import template from '../templates/image-segmentation.html?raw';
 
 // Definitions for Custom Drawing Output
 const legendColors: number[][] = [
-  [66, 133, 244, 255],  // 0: Background - Google Blue (Masked)
-  [128, 0, 0, 200],     // 1: Aeroplane
-  [0, 128, 0, 200],     // 2: Bicycle
-  [128, 128, 0, 200],   // 3: Bird
-  [0, 0, 128, 200],     // 4: Boat
-  [128, 0, 128, 200],   // 5: Bottle
-  [0, 128, 128, 200],   // 6: Bus
+  [66, 133, 244, 255], // 0: Background - Google Blue (Masked)
+  [128, 0, 0, 200], // 1: Aeroplane
+  [0, 128, 0, 200], // 2: Bicycle
+  [128, 128, 0, 200], // 3: Bird
+  [0, 0, 128, 200], // 4: Boat
+  [128, 0, 128, 200], // 5: Bottle
+  [0, 128, 128, 200], // 6: Bus
   [128, 128, 128, 200], // 7: Car
-  [64, 0, 0, 200],      // 8: Cat
-  [0, 255, 0, 200],     // 9: Chair - Bright Green
-  [192, 0, 0, 200],     // 10: Cow
+  [64, 0, 0, 200], // 8: Cat
+  [0, 255, 0, 200], // 9: Chair - Bright Green
+  [192, 0, 0, 200], // 10: Cow
   [255, 105, 180, 200], // 11: Dining Table - Pink
-  [192, 128, 0, 200],   // 12: Dog
-  [64, 0, 128, 200],    // 13: Horse
-  [192, 0, 128, 200],   // 14: Motorbike
-  [0, 255, 255, 255],   // 15: Person - Cyan
-  [0, 128, 0, 200],     // 16: Potted Plant - Green
-  [128, 64, 0, 200],    // 17: Sheep
-  [0, 192, 0, 200],     // 18: Sofa
-  [128, 192, 0, 200],   // 19: Train
-  [0, 64, 128, 200]     // 20: TV
+  [192, 128, 0, 200], // 12: Dog
+  [64, 0, 128, 200], // 13: Horse
+  [192, 0, 128, 200], // 14: Motorbike
+  [0, 255, 255, 255], // 15: Person - Cyan
+  [0, 128, 0, 200], // 16: Potted Plant - Green
+  [128, 64, 0, 200], // 17: Sheep
+  [0, 192, 0, 200], // 18: Sofa
+  [128, 192, 0, 200], // 19: Train
+  [0, 64, 128, 200], // 20: TV
 ];
 
 const standardModels: Record<string, string> = {
-  'deeplab_v3': 'https://storage.googleapis.com/mediapipe-models/image_segmenter/deeplab_v3/float32/1/deeplab_v3.tflite',
-  'hair_segmenter': 'https://storage.googleapis.com/mediapipe-models/image_segmenter/hair_segmenter/float32/1/hair_segmenter.tflite',
-  'selfie_segmenter': 'https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_segmenter/float32/latest/selfie_segmenter.tflite',
-  'selfie_multiclass': 'https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_multiclass_256x256/float32/latest/selfie_multiclass_256x256.tflite'
+  deeplab_v3: 'https://storage.googleapis.com/mediapipe-models/image_segmenter/deeplab_v3/float32/1/deeplab_v3.tflite',
+  hair_segmenter:
+    'https://storage.googleapis.com/mediapipe-models/image_segmenter/hair_segmenter/float32/1/hair_segmenter.tflite',
+  selfie_segmenter:
+    'https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_segmenter/float32/latest/selfie_segmenter.tflite',
+  selfie_multiclass:
+    'https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_multiclass_256x256/float32/latest/selfie_multiclass_256x256.tflite',
 };
 
 class ImageSegmentationTask extends BaseVisionTask {
@@ -81,7 +84,7 @@ class ImageSegmentationTask extends BaseVisionTask {
         { label: 'DeepLab V3', value: 'deeplab_v3', isDefault: true },
         { label: 'Hair Segmenter', value: 'hair_segmenter' },
         { label: 'Selfie Segmenter', value: 'selfie_segmenter' },
-        { label: 'Selfie Multi-class', value: 'selfie_multiclass' }
+        { label: 'Selfie Multi-class', value: 'selfie_multiclass' },
       ]);
     }
 
@@ -190,12 +193,15 @@ class ImageSegmentationTask extends BaseVisionTask {
     }
 
     this.updateStatus('Processing image...');
-    this.worker.postMessage({
-      type: 'SEGMENT_IMAGE',
-      bitmap: bitmap,
-      timestampMs: performance.now(),
-      colors: this.getCurrentColors()
-    }, [bitmap]);
+    this.worker.postMessage(
+      {
+        type: 'SEGMENT_IMAGE',
+        bitmap: bitmap,
+        timestampMs: performance.now(),
+        colors: this.getCurrentColors(),
+      },
+      [bitmap]
+    );
   }
 
   protected override async predictWebcam() {
@@ -228,12 +234,15 @@ class ImageSegmentationTask extends BaseVisionTask {
         const timestampMs = now > this.lastTimestampMs ? now : this.lastTimestampMs + 1;
         this.lastTimestampMs = timestampMs;
 
-        this.worker.postMessage({
-          type: 'SEGMENT_VIDEO',
-          bitmap: bitmap,
-          timestampMs: timestampMs,
-          colors: this.getCurrentColors()
-        }, [bitmap]);
+        this.worker.postMessage(
+          {
+            type: 'SEGMENT_VIDEO',
+            bitmap: bitmap,
+            timestampMs: timestampMs,
+            colors: this.getCurrentColors(),
+          },
+          [bitmap]
+        );
       } catch (e) {
         console.warn('Failed to extract frame in video loop', e);
         this.animationFrameId = window.requestAnimationFrame(this.predictWebcam.bind(this));
@@ -335,7 +344,7 @@ class ImageSegmentationTask extends BaseVisionTask {
     imageCtx.drawImage(maskBitmap, 0, 0, imageCanvas.width, imageCanvas.height);
 
     const existingResults = document.querySelectorAll('#test-results');
-    existingResults.forEach(el => el.remove());
+    existingResults.forEach((el) => el.remove());
 
     const resultsEl = document.createElement('div');
     resultsEl.id = 'test-results';
@@ -344,7 +353,7 @@ class ImageSegmentationTask extends BaseVisionTask {
       timestamp: Date.now(),
       completion: 'done',
       activePixelCount: 1000,
-      maxConfidence: 1.0
+      maxConfidence: 1.0,
     });
 
     if (maskBitmap) maskBitmap.close();
@@ -376,12 +385,12 @@ class ImageSegmentationTask extends BaseVisionTask {
 
   protected override getWorkerInitParams(): Record<string, any> {
     return {
-      runningMode: this.runningMode
+      runningMode: this.runningMode,
     };
   }
 
-  protected override displayImageResult() { }
-  protected override displayVideoResult() { }
+  protected override displayImageResult() {}
+  protected override displayVideoResult() {}
 }
 
 let activeTask: ImageSegmentationTask | null = null;
@@ -391,9 +400,11 @@ export async function setupImageSegmentation(container: HTMLElement) {
     container,
     template,
     defaultModelName: 'deeplab_v3',
-    defaultModelUrl: 'https://storage.googleapis.com/mediapipe-models/image_segmenter/deeplab_v3/float32/1/deeplab_v3.tflite',
-    workerFactory: () => new Worker(new URL('../workers/image-segmentation.worker.ts', import.meta.url), { type: 'module' }),
-    defaultDelegate: 'GPU'
+    defaultModelUrl:
+      'https://storage.googleapis.com/mediapipe-models/image_segmenter/deeplab_v3/float32/1/deeplab_v3.tflite',
+    workerFactory: () =>
+      new Worker(new URL('../workers/image-segmentation.worker.ts', import.meta.url), { type: 'module' }),
+    defaultDelegate: 'GPU',
   });
 
   await activeTask.initialize();

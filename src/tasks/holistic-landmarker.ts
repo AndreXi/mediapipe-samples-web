@@ -19,7 +19,7 @@ import {
   DrawingUtils,
   FaceLandmarker,
   PoseLandmarker,
-  HandLandmarker
+  HandLandmarker,
 } from '@mediapipe/tasks-vision';
 import { BaseVisionTask } from '../components/base-vision-task';
 
@@ -28,7 +28,6 @@ import template from '../templates/holistic-landmarker.html?raw';
 // @ts-ignore
 
 class HolisticLandmarkerTask extends BaseVisionTask {
-
   protected override getWorkerInitParams(): Record<string, any> {
     return {};
   }
@@ -65,7 +64,10 @@ class HolisticLandmarkerTask extends BaseVisionTask {
     // Face Landmarks
     if (result.faceLandmarks && result.faceLandmarks.length > 0) {
       for (const landmarks of result.faceLandmarks) {
-        drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_TESSELATION, { color: '#C0C0C070', lineWidth: 1 });
+        drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_TESSELATION, {
+          color: '#C0C0C070',
+          lineWidth: 1,
+        });
         drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_RIGHT_EYE, { color: '#FF3030' });
         drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_RIGHT_EYEBROW, { color: '#FF3030' });
         drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_LEFT_EYE, { color: '#30FF30' });
@@ -107,9 +109,11 @@ export async function setupHolisticLandmarker(container: HTMLElement) {
     container,
     template,
     defaultModelName: 'holistic_landmarker_lite',
-    defaultModelUrl: 'https://storage.googleapis.com/mediapipe-models/holistic_landmarker/holistic_landmarker/float16/1/holistic_landmarker.task',
+    defaultModelUrl:
+      'https://storage.googleapis.com/mediapipe-models/holistic_landmarker/holistic_landmarker/float16/1/holistic_landmarker.task',
     defaultDelegate: 'GPU',
-    workerFactory: () => new Worker(new URL('../workers/holistic-landmarker.worker.ts', import.meta.url), { type: 'module' }),
+    workerFactory: () =>
+      new Worker(new URL('../workers/holistic-landmarker.worker.ts', import.meta.url), { type: 'module' }),
   });
 
   await activeTask.initialize();

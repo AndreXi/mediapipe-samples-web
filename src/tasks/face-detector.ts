@@ -61,14 +61,16 @@ class FaceDetectorTask extends BaseVisionTask {
     }
 
     this.models = {
-      'blaze_face_short_range': 'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite',
-      'blaze_face_full_range': 'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_full_range/float16/1/blaze_face_full_range.tflite'
+      blaze_face_short_range:
+        'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite',
+      blaze_face_full_range:
+        'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_full_range/float16/1/blaze_face_full_range.tflite',
     };
 
     if (this.modelSelector) {
       this.modelSelector.updateOptions([
         { label: 'BlazeFace (Short Range)', value: 'blaze_face_short_range', isDefault: true },
-        { label: 'BlazeFace (Full Range)', value: 'blaze_face_full_range' }
+        { label: 'BlazeFace (Full Range)', value: 'blaze_face_full_range' },
       ]);
     }
   }
@@ -76,7 +78,7 @@ class FaceDetectorTask extends BaseVisionTask {
   protected override getWorkerInitParams(): Record<string, any> {
     return {
       minDetectionConfidence: this.minDetectionConfidence,
-      minSuppressionThreshold: this.minSuppressionThreshold
+      minSuppressionThreshold: this.minSuppressionThreshold,
     };
   }
 
@@ -117,7 +119,7 @@ class FaceDetectorTask extends BaseVisionTask {
     drawingUtils.drawBoundingBox(detection.boundingBox!, {
       color: '#007f8b',
       lineWidth: 4,
-      fillColor: 'transparent'
+      fillColor: 'transparent',
     });
 
     const { originX, originY } = detection.boundingBox!;
@@ -160,7 +162,8 @@ export async function setupFaceDetector(container: HTMLElement) {
     container,
     template,
     defaultModelName: 'blaze_face_short_range',
-    defaultModelUrl: 'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite',
+    defaultModelUrl:
+      'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite',
     defaultDelegate: 'CPU',
     workerFactory: () => new Worker(new URL('../workers/face-detector.worker.ts', import.meta.url), { type: 'module' }),
   });

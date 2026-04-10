@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  AudioClassifier,
-  AudioClassifierResult,
-  FilesetResolver
-} from '@mediapipe/tasks-audio';
+import { AudioClassifier, AudioClassifierResult, FilesetResolver } from '@mediapipe/tasks-audio';
 import { BaseWorker } from './base-worker';
 
 class AudioClassifierWorker extends BaseWorker<AudioClassifier> {
@@ -33,7 +29,7 @@ class AudioClassifierWorker extends BaseWorker<AudioClassifier> {
         delegate: this.currentOptions.delegate === 'GPU' ? 'GPU' : 'CPU',
       },
       maxResults: this.currentOptions.maxResults,
-      scoreThreshold: this.currentOptions.scoreThreshold
+      scoreThreshold: this.currentOptions.scoreThreshold,
     });
   }
 
@@ -41,7 +37,7 @@ class AudioClassifierWorker extends BaseWorker<AudioClassifier> {
     if (this.taskInstance) {
       await this.taskInstance.setOptions({
         maxResults: this.currentOptions.maxResults,
-        scoreThreshold: this.currentOptions.scoreThreshold
+        scoreThreshold: this.currentOptions.scoreThreshold,
       });
     }
   }
@@ -60,7 +56,7 @@ class AudioClassifierWorker extends BaseWorker<AudioClassifier> {
       try {
         results = this.taskInstance.classify(audioData, sampleRate);
       } catch (e: any) {
-        console.error("Worker classification error:", e);
+        console.error('Worker classification error:', e);
         self.postMessage({ type: 'CLASSIFY_ERROR', error: e.message || 'Classification failed' });
         return;
       }
@@ -68,7 +64,7 @@ class AudioClassifierWorker extends BaseWorker<AudioClassifier> {
       self.postMessage({
         type: 'CLASSIFY_RESULT',
         results: results,
-        inferenceTime: performance.now() - startTimeMs
+        inferenceTime: performance.now() - startTimeMs,
       });
     }
   }

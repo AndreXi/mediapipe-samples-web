@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  FaceLandmarker,
-  FilesetResolver,
-  FaceLandmarkerResult
-} from '@mediapipe/tasks-vision';
+import { FaceLandmarker, FilesetResolver, FaceLandmarkerResult } from '@mediapipe/tasks-vision';
 
 import { BaseWorker } from './base-worker';
 
@@ -50,7 +46,7 @@ class FaceLandmarkerWorker extends BaseWorker<FaceLandmarker> {
         minFaceDetectionConfidence: this.currentOptions.minFaceDetectionConfidence || 0.5,
         minFacePresenceConfidence: this.currentOptions.minFacePresenceConfidence || 0.5,
         minTrackingConfidence: this.currentOptions.minTrackingConfidence || 0.5,
-        runningMode: this.currentOptions.runningMode
+        runningMode: this.currentOptions.runningMode,
       });
     }
   }
@@ -82,7 +78,7 @@ class FaceLandmarkerWorker extends BaseWorker<FaceLandmarker> {
           result = this.taskInstance.detect(bitmap);
         }
       } catch (e: any) {
-        console.error("Worker detection error:", e);
+        console.error('Worker detection error:', e);
         bitmap.close();
         self.postMessage({ type: 'DETECT_ERROR', error: e.message || 'Detection failed' });
         return;
@@ -95,7 +91,7 @@ class FaceLandmarkerWorker extends BaseWorker<FaceLandmarker> {
         type: 'DETECT_RESULT',
         mode: requiredMode,
         result: result,
-        inferenceTime: inferenceTime
+        inferenceTime: inferenceTime,
       });
     }
   }

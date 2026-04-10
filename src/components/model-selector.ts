@@ -22,9 +22,7 @@ export interface ModelOption {
   isDefault?: boolean;
 }
 
-export type ModelSelection =
-  | { type: 'standard'; value: string }
-  | { type: 'custom'; file: File };
+export type ModelSelection = { type: 'standard'; value: string } | { type: 'custom'; file: File };
 
 export class ModelSelector {
   private container: HTMLElement;
@@ -41,11 +39,7 @@ export class ModelSelector {
   private progressBar!: HTMLElement;
   private progressText!: HTMLElement;
 
-  constructor(
-    containerId: string,
-    options: ModelOption[],
-    onModelChanged: (selection: ModelSelection) => void
-  ) {
+  constructor(containerId: string, options: ModelOption[], onModelChanged: (selection: ModelSelection) => void) {
     const el = document.getElementById(containerId);
     if (!el) throw new Error(`ModelSelector: container ${containerId} not found`);
     this.container = el;
@@ -78,7 +72,7 @@ export class ModelSelector {
       <div id="${this.container.id}-view-list" class="tab-content active">
         <div class="select-wrapper">
           <select class="model-select">
-            ${this.options.map(opt => `<option value="${opt.value}" ${opt.isDefault ? 'selected' : ''}>${opt.label}</option>`).join('')}
+            ${this.options.map((opt) => `<option value="${opt.value}" ${opt.isDefault ? 'selected' : ''}>${opt.label}</option>`).join('')}
           </select>
         </div>
       </div>
@@ -111,7 +105,7 @@ export class ModelSelector {
       `${this.container.id}-toggle`,
       [
         { label: 'Standard', value: 'standard', icon: 'grid_view' },
-        { label: 'Upload', value: 'upload', icon: 'upload' }
+        { label: 'Upload', value: 'upload', icon: 'upload' },
       ],
       'standard',
       (mode) => {

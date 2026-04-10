@@ -37,7 +37,7 @@ class InteractiveSegmenterWorker extends BaseWorker<InteractiveSegmenter> {
       },
       canvas: this.renderCanvas,
       outputCategoryMask: true,
-      outputConfidenceMasks: false
+      outputConfidenceMasks: false,
     });
   }
 
@@ -46,7 +46,7 @@ class InteractiveSegmenterWorker extends BaseWorker<InteractiveSegmenter> {
       await this.taskInstance.setOptions({
         runningMode: 'IMAGE',
         outputCategoryMask: true,
-        outputConfidenceMasks: false
+        outputConfidenceMasks: false,
       });
     }
   }
@@ -60,7 +60,7 @@ class InteractiveSegmenterWorker extends BaseWorker<InteractiveSegmenter> {
         const timestampMs = performance.now();
 
         const result = this.taskInstance.segment(bitmap, {
-          keypoint: { x: pt.x, y: pt.y }
+          keypoint: { x: pt.x, y: pt.y },
         });
 
         const categoryMask = result.categoryMask;
@@ -94,16 +94,18 @@ class InteractiveSegmenterWorker extends BaseWorker<InteractiveSegmenter> {
           categoryMask.close();
         }
 
-        (self as any).postMessage({
-          type: 'SEGMENT_RESULT',
-          maskBitmap,
-          width,
-          height,
-          inferenceTime: performance.now() - timestampMs
-        }, maskBitmap ? [maskBitmap] : []);
-
+        (self as any).postMessage(
+          {
+            type: 'SEGMENT_RESULT',
+            maskBitmap,
+            width,
+            height,
+            inferenceTime: performance.now() - timestampMs,
+          },
+          maskBitmap ? [maskBitmap] : []
+        );
       } catch (error: any) {
-        console.error("Segmentation Error:", error);
+        console.error('Segmentation Error:', error);
         self.postMessage({ type: 'ERROR', error: error.message });
       }
     }

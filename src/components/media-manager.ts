@@ -93,7 +93,7 @@ export class MediaManager {
       'view-mode-toggle',
       [
         { label: 'Webcam', value: 'video' },
-        { label: 'Image', value: 'image' }
+        { label: 'Image', value: 'image' },
       ],
       initialMode.toLowerCase(),
       (value) => {
@@ -207,7 +207,6 @@ export class MediaManager {
       this.runningMode = 'VIDEO';
       localStorage.setItem('mediapipe-webcam-active', 'true');
       if (this.options.onWebcamStart) this.options.onWebcamStart();
-
     } catch (err) {
       console.error(err);
       if (this.enableWebcamButton) {
@@ -220,7 +219,7 @@ export class MediaManager {
   public stopCam(persistState = true) {
     if (this.video && this.video.srcObject) {
       const stream = this.video.srcObject as MediaStream;
-      stream.getTracks().forEach(t => t.stop());
+      stream.getTracks().forEach((t) => t.stop());
       this.video.srcObject = null;
       document.getElementById('webcam-placeholder')?.classList.remove('hidden');
       if (this.enableWebcamButton) this.enableWebcamButton.innerText = 'Enable Webcam';

@@ -19,7 +19,7 @@ import {
   FilesetResolver,
   ImageSegmenterResult,
   DrawingUtils,
-  RGBAColor
+  RGBAColor,
 } from '@mediapipe/tasks-vision';
 
 import { BaseWorker } from './base-worker';
@@ -44,21 +44,21 @@ class ImageSegmentationWorker extends BaseWorker<ImageSegmenter> {
       canvas: this.renderCanvas,
       runningMode: this.currentOptions.runningMode,
       outputCategoryMask: true,
-      outputConfidenceMasks: true
+      outputConfidenceMasks: true,
     });
   }
 
   protected async updateOptions(): Promise<void> {
     if (this.taskInstance) {
       await this.taskInstance.setOptions({
-        runningMode: this.currentOptions.runningMode
+        runningMode: this.currentOptions.runningMode,
       });
     }
   }
 
   protected override getInitPayload(): any {
     return {
-      labels: this.taskInstance ? this.taskInstance.getLabels() : []
+      labels: this.taskInstance ? this.taskInstance.getLabels() : [],
     };
   }
 
@@ -115,17 +115,19 @@ class ImageSegmentationWorker extends BaseWorker<ImageSegmenter> {
             result.confidenceMasks.forEach((m: any) => m.close());
           }
 
-          (self as any).postMessage({
-            type: 'SEGMENT_RESULT',
-            mode: requiredMode,
-            maskBitmap,
-            width,
-            height,
-            inferenceTime
-          }, maskBitmap ? [maskBitmap] : []);
-
+          (self as any).postMessage(
+            {
+              type: 'SEGMENT_RESULT',
+              mode: requiredMode,
+              maskBitmap,
+              width,
+              height,
+              inferenceTime,
+            },
+            maskBitmap ? [maskBitmap] : []
+          );
         } catch (e: any) {
-          console.error("Worker callback error:", e);
+          console.error('Worker callback error:', e);
           self.postMessage({ type: 'SEGMENT_ERROR', error: e.message || 'Processing failed' });
         }
       };
@@ -138,7 +140,7 @@ class ImageSegmentationWorker extends BaseWorker<ImageSegmenter> {
           callback(result);
         }
       } catch (e: any) {
-        console.error("Worker segmentation error:", e);
+        console.error('Worker segmentation error:', e);
         bitmap.close();
         self.postMessage({ type: 'SEGMENT_ERROR', error: e.message || 'Segmentation failed' });
       }

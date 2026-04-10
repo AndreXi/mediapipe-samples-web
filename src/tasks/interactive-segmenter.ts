@@ -76,7 +76,7 @@ class InteractiveSegmenterTask extends BaseVisionTask {
       let x = clickX / rect.width;
       const y = clickY / rect.height;
 
-      // The WebCam feed visually mirrors logic, so X must be flipped. 
+      // The WebCam feed visually mirrors logic, so X must be flipped.
       // Image mode natively aligns, so no X flip is necessary.
       if (source === 'webcam') {
         x = 1 - x; // Adjust for mirrored CSS transform: rotateY(180deg)
@@ -85,11 +85,14 @@ class InteractiveSegmenterTask extends BaseVisionTask {
       this.updateStatus('Segmenting...');
       try {
         const bitmap = await createImageBitmap(originalBitmapSource);
-        this.worker?.postMessage({
-          type: 'SEGMENT',
-          bitmap,
-          pt: { x, y }
-        }, [bitmap]);
+        this.worker?.postMessage(
+          {
+            type: 'SEGMENT',
+            bitmap,
+            pt: { x, y },
+          },
+          [bitmap]
+        );
       } catch (err) {
         console.error(err);
       }
@@ -112,7 +115,7 @@ class InteractiveSegmenterTask extends BaseVisionTask {
   }
 
   // Interactive Segmenter responds to CLI clicks, not continuous video frames
-  protected override async predictWebcam() { }
+  protected override async predictWebcam() {}
 
   protected override async detectImage(_: HTMLImageElement) {
     if (this.runningMode !== 'IMAGE') this.runningMode = 'IMAGE';
@@ -132,7 +135,8 @@ class InteractiveSegmenterTask extends BaseVisionTask {
     }
 
     const infoSpan = document.querySelector('.instructions-banner span:nth-of-type(2)') as HTMLSpanElement;
-    if (infoSpan) infoSpan.innerText = 'Click anywhere on the webcam feed to freeze it, then click the object to segment.';
+    if (infoSpan)
+      infoSpan.innerText = 'Click anywhere on the webcam feed to freeze it, then click the object to segment.';
   }
 
   protected override stopCam(persistState = true) {
@@ -220,8 +224,8 @@ class InteractiveSegmenterTask extends BaseVisionTask {
     return {};
   }
 
-  protected override displayImageResult() { }
-  protected override displayVideoResult() { }
+  protected override displayImageResult() {}
+  protected override displayVideoResult() {}
 }
 
 let activeTask: InteractiveSegmenterTask | null = null;
@@ -231,9 +235,11 @@ export async function setupInteractiveSegmenter(container: HTMLElement) {
     container,
     template,
     defaultModelName: 'magic_touch',
-    defaultModelUrl: 'https://storage.googleapis.com/mediapipe-models/interactive_segmenter/magic_touch/float32/1/magic_touch.tflite',
+    defaultModelUrl:
+      'https://storage.googleapis.com/mediapipe-models/interactive_segmenter/magic_touch/float32/1/magic_touch.tflite',
     defaultDelegate: 'GPU',
-    workerFactory: () => new Worker(new URL('../workers/interactive-segmenter.worker.ts', import.meta.url), { type: 'module' })
+    workerFactory: () =>
+      new Worker(new URL('../workers/interactive-segmenter.worker.ts', import.meta.url), { type: 'module' }),
   });
   await activeTask.initialize();
 }

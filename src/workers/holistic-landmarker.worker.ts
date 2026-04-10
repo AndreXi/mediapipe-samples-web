@@ -35,7 +35,7 @@ class HolisticLandmarkerWorker extends BaseWorker<HolisticLandmarker> {
       minHandLandmarksConfidence: 0.5,
       minPoseDetectionConfidence: 0.5,
       minPosePresenceConfidence: 0.5,
-      minPoseSuppressionThreshold: 0.5
+      minPoseSuppressionThreshold: 0.5,
     });
   }
 
@@ -49,7 +49,7 @@ class HolisticLandmarkerWorker extends BaseWorker<HolisticLandmarker> {
         minHandLandmarksConfidence: 0.5,
         minPoseDetectionConfidence: 0.5,
         minPosePresenceConfidence: 0.5,
-        minPoseSuppressionThreshold: 0.5
+        minPoseSuppressionThreshold: 0.5,
       });
     }
   }
@@ -64,7 +64,7 @@ class HolisticLandmarkerWorker extends BaseWorker<HolisticLandmarker> {
         type: 'DETECT_RESULT',
         result,
         mode: 'IMAGE',
-        inferenceTime: performance.now() - startTimeMs
+        inferenceTime: performance.now() - startTimeMs,
       });
     } else if (type === 'DETECT_VIDEO' && this.taskInstance) {
       try {
@@ -74,10 +74,10 @@ class HolisticLandmarkerWorker extends BaseWorker<HolisticLandmarker> {
           type: 'DETECT_RESULT',
           result,
           mode: 'VIDEO',
-          inferenceTime: performance.now() - startTimeMs
+          inferenceTime: performance.now() - startTimeMs,
         });
       } catch (e) {
-        console.warn("Video detection error", e);
+        console.warn('Video detection error', e);
       }
     } else if (type === 'CLEANUP') {
       this.taskInstance?.close();

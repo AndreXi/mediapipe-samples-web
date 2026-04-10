@@ -34,8 +34,8 @@
       <h2>Text Embedding</h2>
     </div>
 
-    <div class="viewport" style="display: flex; flex-direction: column; height: 100%;">
-      <div class="comparison-container" style="padding: 20px; flex-grow: 1; overflow-y: auto;">
+    <div class="viewport" style="display: flex; flex-direction: column; height: 100%">
+      <div class="comparison-container" style="padding: 20px; flex-grow: 1; overflow-y: auto">
         <div class="embedding-grid">
           <!-- Text 1 Column -->
           <div class="input-column">
@@ -43,14 +43,16 @@
               <div class="card-header">
                 <span class="card-title">Text 1</span>
                 <div class="samples-row">
-                  <button class="sample-chip" data-target="text-input-1" data-text="I love this movie!">Positive</button>
+                  <button class="sample-chip" data-target="text-input-1" data-text="I love this movie!">
+                    Positive
+                  </button>
                   <button class="sample-chip" data-target="text-input-1" data-text="The sky is blue.">Fact</button>
                   <button class="sample-chip" data-target="text-input-1" data-text="Hello world.">Greeting</button>
                 </div>
               </div>
               <textarea id="text-input-1" placeholder="Enter first text..." rows="6"></textarea>
-              </div>
-              </div>
+            </div>
+          </div>
 
           <!-- Text 2 Column -->
           <div class="input-column">
@@ -58,10 +60,13 @@
               <div class="card-header">
                 <span class="card-title">Text 2</span>
                 <div class="samples-row">
-                  <button class="sample-chip" data-target="text-input-2" data-text="This film is amazing.">Positive</button>
+                  <button class="sample-chip" data-target="text-input-2" data-text="This film is amazing.">
+                    Positive
+                  </button>
                   <button class="sample-chip" data-target="text-input-2" data-text="I hate this film.">Negative</button>
-                  <button class="sample-chip" data-target="text-input-2"
-                    data-text="Comparison of text similarity.">Phrase</button>
+                  <button class="sample-chip" data-target="text-input-2" data-text="Comparison of text similarity.">
+                    Phrase
+                  </button>
                 </div>
               </div>
               <textarea id="text-input-2" placeholder="Enter second text..." rows="6"></textarea>
@@ -69,24 +74,24 @@
           </div>
         </div>
 
-        <div style="display: flex; justify-content: center; margin-top: 30px;">
-          <button id="embed-btn" class="action-button" disabled
-            style="width: 100%; max-width: 250px; display: flex; justify-content: center; align-items: center;">
-            <span class="material-icons" style="margin-right: 8px;">compare_arrows</span> Compute Similarity
+        <div style="display: flex; justify-content: center; margin-top: 30px">
+          <button
+            id="embed-btn"
+            class="action-button"
+            disabled
+            style="width: 100%; max-width: 250px; display: flex; justify-content: center; align-items: center"
+          >
+            <span class="material-icons" style="margin-right: 8px">compare_arrows</span> Compute Similarity
           </button>
         </div>
 
-        <div id="embedding-results" class="results-container" style="margin-top: 40px; display: none;">
+        <div id="embedding-results" class="results-container" style="margin-top: 40px; display: none">
           <div class="similarity-card">
             <div class="similarity-label">Cosine Similarity</div>
             <div class="similarity-value" id="similarity-value">--</div>
           </div>
         </div>
       </div>
-
-
-
-
     </div>
   </div>
 </div>
@@ -196,7 +201,7 @@
 
   .action-button:hover:not(:disabled) {
     background: var(--primary-hover);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
   .similarity-card {
@@ -224,6 +229,4 @@
     color: var(--primary);
     font-family: 'Roboto Mono', monospace;
   }
-
-
 </style>

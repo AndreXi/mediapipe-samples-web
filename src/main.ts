@@ -57,7 +57,7 @@ renderMobileNav(mobileNavContainer);
 
 // 3. Setup Navigation Logic
 const menuToggles = app.querySelectorAll('.menu-toggle');
-menuToggles.forEach(toggle => {
+menuToggles.forEach((toggle) => {
   toggle.addEventListener('click', () => {
     sidebar.classList.toggle('open');
   });
@@ -74,20 +74,56 @@ const mainContent = app.querySelector('.main-content') as HTMLElement;
 
 // 4. Router Setup
 const routes = {
-  '/vision/object_detector': { setup: setupObjectDetection, cleanup: cleanupObjectDetection, label: 'Object Detection' },
+  '/vision/object_detector': {
+    setup: setupObjectDetection,
+    cleanup: cleanupObjectDetection,
+    label: 'Object Detection',
+  },
   '/vision/face_detector': { setup: setupFaceDetector, cleanup: cleanupFaceDetector, label: 'Face Detection' },
   '/vision/face_landmarker': { setup: setupFaceLandmarker, cleanup: cleanupFaceLandmarker, label: 'Face Landmarker' },
   '/vision/hand_landmarker': { setup: setupHandLandmarker, cleanup: cleanupHandLandmarker, label: 'Hand Landmarker' },
   '/vision/pose_landmarker': { setup: setupPoseLandmarker, cleanup: cleanupPoseLandmarker, label: 'Pose Landmarker' },
-  '/vision/holistic_landmarker': { setup: setupHolisticLandmarker, cleanup: cleanupHolisticLandmarker, label: 'Holistic Landmarker' },
-  '/vision/image_classifier': { setup: setupImageClassifier, cleanup: cleanupImageClassifier, label: 'Image Classifier' },
-  '/vision/gesture_recognizer': { setup: setupGestureRecognizer, cleanup: cleanupGestureRecognizer, label: 'Gesture Recognizer' },
-  '/vision/interactive_segmenter': { setup: setupInteractiveSegmenter, cleanup: cleanupInteractiveSegmenter, label: 'Interactive Segmenter' },
-  '/vision/image_segmenter': { setup: setupImageSegmentation, cleanup: cleanupImageSegmentation, label: 'Image Segmentation' },
+  '/vision/holistic_landmarker': {
+    setup: setupHolisticLandmarker,
+    cleanup: cleanupHolisticLandmarker,
+    label: 'Holistic Landmarker',
+  },
+  '/vision/image_classifier': {
+    setup: setupImageClassifier,
+    cleanup: cleanupImageClassifier,
+    label: 'Image Classifier',
+  },
+  '/vision/gesture_recognizer': {
+    setup: setupGestureRecognizer,
+    cleanup: cleanupGestureRecognizer,
+    label: 'Gesture Recognizer',
+  },
+  '/vision/interactive_segmenter': {
+    setup: setupInteractiveSegmenter,
+    cleanup: cleanupInteractiveSegmenter,
+    label: 'Interactive Segmenter',
+  },
+  '/vision/image_segmenter': {
+    setup: setupImageSegmentation,
+    cleanup: cleanupImageSegmentation,
+    label: 'Image Segmentation',
+  },
   '/vision/image_embedder': { setup: setupImageEmbedder, cleanup: cleanupImageEmbedder, label: 'Image Embedding' },
-  '/audio/audio_classifier': { setup: setupAudioClassifier, cleanup: cleanupAudioClassifier, label: 'Audio Classifier' },
-  '/text/text_classifier': { setup: setupTextClassification, cleanup: cleanupTextClassification, label: 'Text Classification' },
-  '/text/language_detector': { setup: setupLanguageDetector, cleanup: cleanupLanguageDetector, label: 'Language Detection' },
+  '/audio/audio_classifier': {
+    setup: setupAudioClassifier,
+    cleanup: cleanupAudioClassifier,
+    label: 'Audio Classifier',
+  },
+  '/text/text_classifier': {
+    setup: setupTextClassification,
+    cleanup: cleanupTextClassification,
+    label: 'Text Classification',
+  },
+  '/text/language_detector': {
+    setup: setupLanguageDetector,
+    cleanup: cleanupLanguageDetector,
+    label: 'Language Detection',
+  },
   '/text/text_embedder': { setup: setupTextEmbedding, cleanup: cleanupTextEmbedding, label: 'Text Embedding' },
 };
 
@@ -121,7 +157,7 @@ async function router() {
 
     // Update active state in sidebar
     const links = sidebar.querySelectorAll('a');
-    links.forEach(l => {
+    links.forEach((l) => {
       if (l.getAttribute('href') === `#${hash}`) l.classList.add('active');
       else l.classList.remove('active');
     });

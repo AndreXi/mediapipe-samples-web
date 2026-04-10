@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  PoseLandmarker,
-  FilesetResolver,
-  PoseLandmarkerResult
-} from '@mediapipe/tasks-vision';
+import { PoseLandmarker, FilesetResolver, PoseLandmarkerResult } from '@mediapipe/tasks-vision';
 import { BaseWorker } from './base-worker';
 
 class PoseLandmarkerWorker extends BaseWorker<PoseLandmarker> {
@@ -49,7 +45,7 @@ class PoseLandmarkerWorker extends BaseWorker<PoseLandmarker> {
         minTrackingConfidence: this.currentOptions.minTrackingConfidence,
         numPoses: this.currentOptions.numPoses,
         outputSegmentationMasks: this.currentOptions.outputSegmentationMasks,
-        runningMode: this.currentOptions.runningMode
+        runningMode: this.currentOptions.runningMode,
       });
     }
   }
@@ -81,7 +77,7 @@ class PoseLandmarkerWorker extends BaseWorker<PoseLandmarker> {
           result = this.taskInstance.detect(bitmap);
         }
       } catch (e: any) {
-        console.error("Worker detection error:", e);
+        console.error('Worker detection error:', e);
         bitmap.close();
         self.postMessage({ type: 'DETECT_ERROR', error: e.message || 'Detection failed' });
         return;
@@ -94,7 +90,7 @@ class PoseLandmarkerWorker extends BaseWorker<PoseLandmarker> {
         type: 'DETECT_RESULT',
         mode: requiredMode,
         result: result,
-        inferenceTime: inferenceTime
+        inferenceTime: inferenceTime,
       });
     }
   }

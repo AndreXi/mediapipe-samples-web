@@ -24,7 +24,7 @@ import template from '../templates/audio-classifier.html?raw';
 
 class AudioClassifierTask extends BaseAudioTask {
   private classificationResultUI: ClassificationResult | undefined;
-  
+
   // Options
   private maxResults = 3;
   private scoreThreshold = 0.02;
@@ -81,20 +81,18 @@ class AudioClassifierTask extends BaseAudioTask {
     this.currentDelegate = 'GPU';
 
     this.models = {
-      'yamnet': 'https://storage.googleapis.com/mediapipe-models/audio_classifier/yamnet/float32/1/yamnet.tflite'
+      yamnet: 'https://storage.googleapis.com/mediapipe-models/audio_classifier/yamnet/float32/1/yamnet.tflite',
     };
 
     if (this.modelSelector) {
-      this.modelSelector.updateOptions([
-        { label: 'Yamnet (AudioSet)', value: 'yamnet', isDefault: true }
-      ]);
+      this.modelSelector.updateOptions([{ label: 'Yamnet (AudioSet)', value: 'yamnet', isDefault: true }]);
     }
   }
 
   protected override getWorkerInitParams(): Record<string, any> {
     return {
       maxResults: this.maxResults,
-      scoreThreshold: this.scoreThreshold
+      scoreThreshold: this.scoreThreshold,
     };
   }
 
@@ -154,7 +152,7 @@ class AudioClassifierTask extends BaseAudioTask {
         type: 'CLASSIFY',
         audioData: data,
         sampleRate: sampleRate,
-        timestampMs: performance.now()
+        timestampMs: performance.now(),
       });
     }
   }
@@ -174,7 +172,7 @@ class AudioClassifierTask extends BaseAudioTask {
         type: 'CLASSIFY',
         audioData: inputData,
         sampleRate: tempCtx.sampleRate,
-        timestampMs: 0
+        timestampMs: 0,
       });
     }
 
@@ -184,7 +182,7 @@ class AudioClassifierTask extends BaseAudioTask {
   private updateWaveformBuffer(newData: Float32Array) {
     const validData = newData.length > 0 ? newData : new Float32Array(newData.length);
     const newBuffer = new Float32Array(this.WAVEFORM_HISTORY_SIZE);
-    
+
     newBuffer.set(this.waveformBuffer.subarray(validData.length), 0);
     newBuffer.set(validData, this.WAVEFORM_HISTORY_SIZE - validData.length);
 
@@ -234,7 +232,7 @@ class AudioClassifierTask extends BaseAudioTask {
 
       for (let i = 0; i < snapshot.length; i += step) {
         const v = snapshot[i];
-        const y = (v * height / 1.5) + (height / 2);
+        const y = (v * height) / 1.5 + height / 2;
 
         if (i === 0) {
           this.canvasCtx.moveTo(x, y);
@@ -260,9 +258,9 @@ class AudioClassifierTask extends BaseAudioTask {
     }
 
     const topResults = classifications.slice(0, this.maxResults);
-    const items: ClassificationItem[] = topResults.map(c => ({
+    const items: ClassificationItem[] = topResults.map((c) => ({
       label: c.categoryName,
-      score: c.score
+      score: c.score,
     }));
 
     this.classificationResultUI.updateResults(items);
@@ -277,8 +275,9 @@ export async function setupAudioClassifier(container: HTMLElement) {
     template,
     defaultModelName: 'yamnet',
     defaultModelUrl: 'https://storage.googleapis.com/mediapipe-models/audio_classifier/yamnet/float32/1/yamnet.tflite',
-    workerFactory: () => new Worker(new URL('../workers/audio-classifier.worker.ts', import.meta.url), { type: 'module' }),
-    defaultDelegate: 'GPU'
+    workerFactory: () =>
+      new Worker(new URL('../workers/audio-classifier.worker.ts', import.meta.url), { type: 'module' }),
+    defaultDelegate: 'GPU',
   });
 
   await activeTask.initialize();

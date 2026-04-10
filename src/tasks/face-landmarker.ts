@@ -69,13 +69,12 @@ class FaceLandmarkerTask extends BaseVisionTask {
 
     // Custom model options for Face Landmarker
     this.models = {
-      'face_landmarker': 'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task'
+      face_landmarker:
+        'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task',
     };
 
     if (this.modelSelector) {
-      this.modelSelector.updateOptions([
-        { label: 'Face Landmarker', value: 'face_landmarker', isDefault: true }
-      ]);
+      this.modelSelector.updateOptions([{ label: 'Face Landmarker', value: 'face_landmarker', isDefault: true }]);
     }
   }
 
@@ -142,27 +141,18 @@ class FaceLandmarkerTask extends BaseVisionTask {
   }
 
   private drawLandmarks(drawingUtils: DrawingUtils, landmarks: any[]) {
-    drawingUtils.drawConnectors(
-      landmarks, FaceLandmarker.FACE_LANDMARKS_TESSELATION,
-      { color: '#C0C0C070', lineWidth: 1 });
-    drawingUtils.drawConnectors(
-      landmarks, FaceLandmarker.FACE_LANDMARKS_RIGHT_EYE, { color: '#FF3030' });
-    drawingUtils.drawConnectors(
-      landmarks, FaceLandmarker.FACE_LANDMARKS_RIGHT_EYEBROW,
-      { color: '#FF3030' });
-    drawingUtils.drawConnectors(
-      landmarks, FaceLandmarker.FACE_LANDMARKS_LEFT_EYE, { color: '#30FF30' });
-    drawingUtils.drawConnectors(
-      landmarks, FaceLandmarker.FACE_LANDMARKS_LEFT_EYEBROW,
-      { color: '#30FF30' });
-    drawingUtils.drawConnectors(
-      landmarks, FaceLandmarker.FACE_LANDMARKS_FACE_OVAL, { color: '#E0E0E0' });
-    drawingUtils.drawConnectors(
-      landmarks, FaceLandmarker.FACE_LANDMARKS_LIPS, { color: '#E0E0E0' });
-    drawingUtils.drawConnectors(
-      landmarks, FaceLandmarker.FACE_LANDMARKS_RIGHT_IRIS, { color: '#FF3030' });
-    drawingUtils.drawConnectors(
-      landmarks, FaceLandmarker.FACE_LANDMARKS_LEFT_IRIS, { color: '#30FF30' });
+    drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_TESSELATION, {
+      color: '#C0C0C070',
+      lineWidth: 1,
+    });
+    drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_RIGHT_EYE, { color: '#FF3030' });
+    drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_RIGHT_EYEBROW, { color: '#FF3030' });
+    drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_LEFT_EYE, { color: '#30FF30' });
+    drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_LEFT_EYEBROW, { color: '#30FF30' });
+    drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_FACE_OVAL, { color: '#E0E0E0' });
+    drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_LIPS, { color: '#E0E0E0' });
+    drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_RIGHT_IRIS, { color: '#FF3030' });
+    drawingUtils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_LEFT_IRIS, { color: '#30FF30' });
   }
 }
 
@@ -174,8 +164,10 @@ export async function setupFaceLandmarker(container: HTMLElement) {
     container,
     template,
     defaultModelName: 'face_landmarker',
-    defaultModelUrl: 'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task',
-    workerFactory: () => new Worker(new URL('../workers/face-landmarker.worker.ts', import.meta.url), { type: 'module' })
+    defaultModelUrl:
+      'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task',
+    workerFactory: () =>
+      new Worker(new URL('../workers/face-landmarker.worker.ts', import.meta.url), { type: 'module' }),
   });
 
   await activeTask.initialize();

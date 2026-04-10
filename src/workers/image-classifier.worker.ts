@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  ImageClassifier,
-  FilesetResolver,
-  ImageClassifierResult
-} from '@mediapipe/tasks-vision';
+import { ImageClassifier, FilesetResolver, ImageClassifierResult } from '@mediapipe/tasks-vision';
 import { BaseWorker } from './base-worker';
 
 class ImageClassifierWorker extends BaseWorker<ImageClassifier> {
@@ -74,7 +70,7 @@ class ImageClassifierWorker extends BaseWorker<ImageClassifier> {
           result = this.taskInstance.classify(bitmap);
         }
       } catch (e: any) {
-        console.error("Worker classification error:", e);
+        console.error('Worker classification error:', e);
         bitmap?.close();
         self.postMessage({ type: 'ERROR', error: e.message || 'Classification failed' });
         return;
@@ -87,7 +83,7 @@ class ImageClassifierWorker extends BaseWorker<ImageClassifier> {
         type: 'DETECT_RESULT',
         mode: requiredMode,
         result: result,
-        inferenceTime: inferenceTime
+        inferenceTime: inferenceTime,
       });
     }
   }
