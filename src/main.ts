@@ -77,9 +77,9 @@ const routes = {
   '/vision/object_detector': {
     setup: setupObjectDetector,
     cleanup: cleanupObjectDetector,
-    label: 'Object Detection',
+    label: 'Object Detector',
   },
-  '/vision/face_detector': { setup: setupFaceDetector, cleanup: cleanupFaceDetector, label: 'Face Detection' },
+  '/vision/face_detector': { setup: setupFaceDetector, cleanup: cleanupFaceDetector, label: 'Face Detector' },
   '/vision/face_landmarker': { setup: setupFaceLandmarker, cleanup: cleanupFaceLandmarker, label: 'Face Landmarker' },
   '/vision/hand_landmarker': { setup: setupHandLandmarker, cleanup: cleanupHandLandmarker, label: 'Hand Landmarker' },
   '/vision/pose_landmarker': { setup: setupPoseLandmarker, cleanup: cleanupPoseLandmarker, label: 'Pose Landmarker' },
@@ -106,9 +106,9 @@ const routes = {
   '/vision/image_segmenter': {
     setup: setupImageSegmenter,
     cleanup: cleanupImageSegmenter,
-    label: 'Image Segmentation',
+    label: 'Image Segmenter',
   },
-  '/vision/image_embedder': { setup: setupImageEmbedder, cleanup: cleanupImageEmbedder, label: 'Image Embedding' },
+  '/vision/image_embedder': { setup: setupImageEmbedder, cleanup: cleanupImageEmbedder, label: 'Image Embedder' },
   '/audio/audio_classifier': {
     setup: setupAudioClassifier,
     cleanup: cleanupAudioClassifier,
@@ -117,14 +117,14 @@ const routes = {
   '/text/text_classifier': {
     setup: setupTextClassifier,
     cleanup: cleanupTextClassifier,
-    label: 'Text Classification',
+    label: 'Text Classifier',
   },
   '/text/language_detector': {
     setup: setupLanguageDetector,
     cleanup: cleanupLanguageDetector,
-    label: 'Language Detection',
+    label: 'Language Detector',
   },
-  '/text/text_embedder': { setup: setupTextEmbedder, cleanup: cleanupTextEmbedder, label: 'Text Embedding' },
+  '/text/text_embedder': { setup: setupTextEmbedder, cleanup: cleanupTextEmbedder, label: 'Text Embedder' },
 };
 
 let currentCleanup: (() => void) | undefined;
