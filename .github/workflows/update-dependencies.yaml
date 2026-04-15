@@ -32,7 +32,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Update dependencies
-        run: pnpm up
+        run: pnpm up --latest
 
       - name: Install Playwright Browsers
         run: pnpm exec playwright install chromium --with-deps
@@ -44,7 +44,7 @@ jobs:
       - name: Create Pull Request with CLI
         if: success()
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.MEDIAPIPEBOT }}
         run: |
           git config user.name "mediapipe-bot"
           git config user.email "mediapipe-bot@google.com"
