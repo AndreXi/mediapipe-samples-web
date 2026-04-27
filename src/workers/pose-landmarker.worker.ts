@@ -19,8 +19,7 @@ import { BaseWorker } from './base-worker';
 
 class PoseLandmarkerWorker extends BaseWorker<PoseLandmarker> {
   protected async initializeTask(): Promise<void> {
-    const vision = await FilesetResolver.forVisionTasks(this.getWasmPath(), /* useEsmModule= */ true);
-    vision.wasmLoaderPath = `${this.getWasmPath()}/vision_wasm_module_internal.js`;
+    const vision = await this.getVisionFileset();
     const modelBuffer = await this.loadModelAsset();
 
     this.taskInstance = await PoseLandmarker.createFromOptions(vision, {

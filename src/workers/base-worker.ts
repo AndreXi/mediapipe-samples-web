@@ -14,6 +14,8 @@
  *limitations under the License.
  */
 
+import { FilesetResolver } from '@mediapipe/tasks-vision';
+
 export abstract class BaseWorker<T> {
   protected taskInstance: T | undefined;
   protected isInitializing = false;
@@ -137,6 +139,27 @@ export abstract class BaseWorker<T> {
   protected getWasmPath(): string {
     const formattedBasePath = this.basePath.endsWith('/') ? this.basePath : `${this.basePath}/`;
     return new URL(`${formattedBasePath}wasm`, self.location.origin).href.replace(/\/$/, '');
+  }
+
+  protected async getVisionFileset() {
+    const wasmPath = this.getWasmPath();
+    const fileset = await FilesetResolver.forVisionTasks(wasmPath, true);
+    fileset.wasmLoaderPath = `${fileset.wasmLoaderPath}?cb=${Date.now()}`; // Force reload
+    return fileset;
+  }
+
+  protected async getAudioFileset() {
+    const wasmPath = this.getWasmPath();
+    const fileset = await FilesetResolver.forAudioTasks(wasmPath, true);
+    fileset.wasmLoaderPath = `${fileset.wasmLoaderPath}?cb=${Date.now()}`; // Force reload
+    return fileset;
+  }
+
+  protected async getTextFileset() {
+    const wasmPath = this.getWasmPath();
+    const fileset = await FilesetResolver.forTextTasks(wasmPath, true);
+    fileset.wasmLoaderPath = `${fileset.wasmLoaderPath}?cb=${Date.now()}`; // Force reload
+    return fileset;
   }
 
   protected updateOptions(_?: any): Promise<void> {

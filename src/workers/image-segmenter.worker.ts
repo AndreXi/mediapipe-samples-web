@@ -28,8 +28,7 @@ class ImageSegmentationWorker extends BaseWorker<ImageSegmenter> {
   private renderCanvas?: OffscreenCanvas;
 
   protected async initializeTask(): Promise<void> {
-    const vision = await FilesetResolver.forVisionTasks(this.getWasmPath(), /* useEsmModule= */ true);
-    vision.wasmLoaderPath = `${this.getWasmPath()}/vision_wasm_module_internal.js`;
+    const vision = await this.getVisionFileset();
     const modelBuffer = await this.loadModelAsset();
 
     if (!this.renderCanvas) {

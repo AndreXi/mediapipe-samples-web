@@ -19,9 +19,7 @@ import { BaseWorker } from './base-worker';
 
 class HolisticLandmarkerWorker extends BaseWorker<HolisticLandmarker> {
   protected async initializeTask(data: any): Promise<void> {
-    const wasmPath = new URL(`${import.meta.env.BASE_URL}wasm`, self.location.origin).href;
-    const vision = await FilesetResolver.forVisionTasks(wasmPath, /* useEsmModule= */ true);
-    vision.wasmLoaderPath = `${wasmPath}/vision_wasm_module_internal.js`;
+    const vision = await this.getVisionFileset();
 
     this.taskInstance = await HolisticLandmarker.createFromOptions(vision, {
       baseOptions: {

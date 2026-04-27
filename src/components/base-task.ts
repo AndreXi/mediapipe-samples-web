@@ -140,7 +140,7 @@ export abstract class BaseTask {
     );
   }
 
-  protected async initializeTask() {
+  protected async initializeTask(): Promise<void> {
     document.querySelector('.viewport')?.classList.add('loading-model');
     this.isWorkerReady = false;
     this.updateStatus('Loading Model...');

@@ -19,8 +19,7 @@ import { BaseWorker } from './base-worker';
 
 class AudioClassifierWorker extends BaseWorker<AudioClassifier> {
   protected async initializeTask(): Promise<void> {
-    const audioFileset = await FilesetResolver.forAudioTasks(this.getWasmPath(), /* useEsmModule= */ true);
-    audioFileset.wasmLoaderPath = `${this.getWasmPath()}/audio_wasm_module_internal.js`;
+    const audioFileset = await this.getAudioFileset();
     const modelBuffer = await this.loadModelAsset();
 
     this.taskInstance = await AudioClassifier.createFromOptions(audioFileset, {

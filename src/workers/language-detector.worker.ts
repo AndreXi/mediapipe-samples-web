@@ -19,10 +19,7 @@ import { BaseWorker } from './base-worker';
 
 class LanguageDetectorWorker extends BaseWorker<LanguageDetector> {
   protected async initializeTask(data: any): Promise<void> {
-    const wasmPath = new URL(`${data.baseUrl || import.meta.env.BASE_URL}wasm`, self.location.origin).href;
-    const text = await FilesetResolver.forTextTasks(wasmPath, /* useEsmModule= */ true);
-    text.wasmLoaderPath = `${wasmPath}/text_wasm_module_internal.js`;
-
+    const text = await this.getTextFileset();
     const modelBuffer = await this.loadModelAsset();
 
     this.taskInstance = await LanguageDetector.createFromOptions(text, {

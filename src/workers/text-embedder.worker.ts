@@ -19,8 +19,7 @@ import { BaseWorker } from './base-worker';
 
 class TextEmbedderWorker extends BaseWorker<TextEmbedder> {
   protected async initializeTask(): Promise<void> {
-    const text = await FilesetResolver.forTextTasks(this.getWasmPath(), /* useEsmModule= */ true);
-    text.wasmLoaderPath = `${this.getWasmPath()}/text_wasm_module_internal.js`;
+    const text = await this.getTextFileset();
     const modelBuffer = await this.loadModelAsset();
 
     this.taskInstance = await TextEmbedder.createFromOptions(text, {

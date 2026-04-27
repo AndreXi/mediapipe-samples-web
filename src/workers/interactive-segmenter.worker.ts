@@ -22,9 +22,7 @@ class InteractiveSegmenterWorker extends BaseWorker<InteractiveSegmenter> {
   private renderCanvas?: OffscreenCanvas;
 
   protected async initializeTask(): Promise<void> {
-    const wasmPath = new URL(`${import.meta.env.BASE_URL}wasm`, self.location.origin).href;
-    const vision = await FilesetResolver.forVisionTasks(wasmPath, /* useEsmModule= */ true);
-    vision.wasmLoaderPath = `${wasmPath}/vision_wasm_module_internal.js`;
+    const vision = await this.getVisionFileset();
 
     if (!this.renderCanvas) {
       this.renderCanvas = new OffscreenCanvas(1, 1);
