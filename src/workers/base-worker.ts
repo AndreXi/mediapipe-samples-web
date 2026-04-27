@@ -14,25 +14,6 @@
  *limitations under the License.
  */
 
-/**
- * MediaPipe ESM Web Worker Polyfills
- */
-if (typeof (self as any).import === 'undefined') {
-  (self as any).import = async (url: string) => {
-    const module = await import(/* @vite-ignore */ url);
-    if (module && module.default) {
-      (self as any).ModuleFactory = module.default;
-    }
-    return module;
-  };
-}
-
-if (typeof (self as any).custom_dbg === 'undefined') {
-  (self as any).custom_dbg = function (text: string) {
-    console.log('[MediaPipe Debug]:', text);
-  };
-}
-
 export abstract class BaseWorker<T> {
   protected taskInstance: T | undefined;
   protected isInitializing = false;
